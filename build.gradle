@@ -20,6 +20,7 @@ ext {
     appcompatVersion = '1.7.0'
     materialVersion = '1.12.0'
     constraintlayoutVersion = '2.1.4'
+    recyclerViewVersion = '1.3.2'
     coroutinesVersion = '1.8.1'
     securityCryptoVersion = '1.1.0-alpha06'
     junitVersion = '5.10.3'

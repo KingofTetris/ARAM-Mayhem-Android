@@ -52,5 +52,6 @@
     <string name="sort_hot">最热</string>
     <string name="sort_latest">最新</string>
     <string name="content_description_hero_avatar">英雄头像</string>
+    <string name="content_desc_hero_avatar">英雄头像</string>
     <string name="content_description_augment_icon">强化符文图标</string>
 </resources>

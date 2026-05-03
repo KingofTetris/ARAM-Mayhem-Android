@@ -7,6 +7,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
 
