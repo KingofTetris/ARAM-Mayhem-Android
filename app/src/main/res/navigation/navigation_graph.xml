@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/navigation_heroes">
+
+    <fragment
+        android:id="@+id/navigation_heroes"
+        android:name="com.aram.mayhem.feature.hero.HeroListFragment"
+        android:label="@string/tab_heroes"
+        tools:layout="@layout/fragment_hero_list" />
+
+    <fragment
+        android:id="@+id/navigation_augments"
+        android:name="com.aram.mayhem.feature.augment.AugmentListFragment"
+        android:label="@string/tab_augments"
+        tools:layout="@layout/fragment_augment_list" />
+
+    <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.aram.mayhem.feature.community.CommunityFeedFragment"
+        android:label="@string/tab_community"
+        tools:layout="@layout/fragment_community_feed" />
+
+    <fragment
+        android:id="@+id/navigation_bulletins"
+        android:name="com.aram.mayhem.feature.bulletin.BulletinListFragment"
+        android:label="@string/tab_bulletins"
+        tools:layout="@layout/fragment_bulletin_list" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.aram.mayhem.feature.profile.ProfileFragment"
+        android:label="@string/tab_profile"
+        tools:layout="@layout/fragment_profile" />
+
+</navigation>

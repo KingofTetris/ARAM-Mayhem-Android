@@ -1,0 +1,28 @@
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+    id 'com.android.library' version '8.5.2' apply false
+    id 'com.google.dagger.hilt.android' version '2.51.1' apply false
+}
+
+ext {
+    compileSdkVersion = 34
+    minSdkVersion = 26
+    targetSdkVersion = 34
+
+    hiltVersion = '2.51.1'
+    retrofitVersion = '2.11.0'
+    okhttpVersion = '4.12.0'
+    gsonVersion = '2.11.0'
+    roomVersion = '2.6.1'
+    navigationVersion = '2.7.7'
+    glideVersion = '4.16.0'
+    lifecycleVersion = '2.7.0'
+    appcompatVersion = '1.7.0'
+    materialVersion = '1.12.0'
+    constraintlayoutVersion = '2.1.4'
+    coroutinesVersion = '1.8.1'
+    securityCryptoVersion = '1.1.0-alpha06'
+    junitVersion = '5.10.3'
+    mockitoVersion = '5.12.0'
+    espressoVersion = '3.6.1'
+}

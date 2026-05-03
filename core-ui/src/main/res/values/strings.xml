@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">海克斯大乱斗助手</string>
+
+    <string name="tab_heroes">英雄</string>
+    <string name="tab_augments">符文</string>
+    <string name="tab_community">玩法</string>
+    <string name="tab_bulletins">公告</string>
+    <string name="tab_profile">我的</string>
+
+    <string name="search_hint">搜索英雄…</string>
+    <string name="filter_all">全部</string>
+    <string name="filter_role">定位</string>
+    <string name="filter_tier">梯级</string>
+
+    <string name="quality_prismatic">棱彩</string>
+    <string name="quality_gold">金</string>
+    <string name="quality_silver">银</string>
+
+    <string name="tier_s_plus">S+</string>
+    <string name="tier_s">S</string>
+    <string name="tier_a">A</string>
+    <string name="tier_b">B</string>
+    <string name="tier_c">C</string>
+
+    <string name="vote_up">赞同</string>
+    <string name="vote_down">反对</string>
+    <string name="publish_strategy">发布玩法</string>
+    <string name="edit_profile">编辑资料</string>
+    <string name="settings">设置</string>
+    <string name="logout">退出登录</string>
+    <string name="my_strategies">我的投稿</string>
+
+    <string name="loading">加载中…</string>
+    <string name="empty_state">暂无数据</string>
+    <string name="error_state">加载失败</string>
+    <string name="retry">重试</string>
+    <string name="offline_hint">当前处于离线模式，显示缓存数据</string>
+
+    <string name="trap_banner">⚠ 版本陷阱：该英雄/符文在当前版本表现异常，请谨慎参考</string>
+    <string name="confidence_low">数据置信度低</string>
+
+    <string name="win_rate">胜率</string>
+    <string name="pick_rate">登场率</string>
+    <string name="balance_modifier">平衡修正</string>
+    <string name="skill_order">技能加点</string>
+    <string name="recommended_build">推荐出装</string>
+    <string name="recommended_augments">推荐符文</string>
+    <string name="synergy_progress">套装进度</string>
+
+    <string name="sort_hot">最热</string>
+    <string name="sort_latest">最新</string>
+    <string name="content_description_hero_avatar">英雄头像</string>
+    <string name="content_description_augment_icon">强化符文图标</string>
+</resources>
