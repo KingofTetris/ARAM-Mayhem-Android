@@ -9,7 +9,22 @@
         android:id="@+id/navigation_heroes"
         android:name="com.aram.mayhem.feature.hero.HeroListFragment"
         android:label="@string/tab_heroes"
-        tools:layout="@layout/fragment_hero_list" />
+        tools:layout="@layout/fragment_hero_list">
+        <action
+            android:id="@+id/action_hero_list_to_detail"
+            app:destination="@id/navigation_hero_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_hero_detail"
+        android:name="com.aram.mayhem.feature.hero.HeroDetailFragment"
+        android:label="英雄详情"
+        tools:layout="@layout/fragment_hero_detail">
+        <argument
+            android:name="heroId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_augments"

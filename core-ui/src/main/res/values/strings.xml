@@ -13,6 +13,7 @@
     <string name="filter_all">全部</string>
     <string name="filter_role">定位</string>
     <string name="filter_tier">梯级</string>
+    <string name="tier_all">全部</string>
 
     <string name="quality_prismatic">棱彩</string>
     <string name="quality_gold">金</string>
@@ -54,4 +55,18 @@
     <string name="content_description_hero_avatar">英雄头像</string>
     <string name="content_desc_hero_avatar">英雄头像</string>
     <string name="content_description_augment_icon">强化符文图标</string>
+
+    <string name="hero_detail_image">英雄详情图片</string>
+    <string name="hero_detail_basic_info">基本信息</string>
+    <string name="hero_detail_english_name">英文名</string>
+    <string name="hero_detail_role">定位</string>
+    <string name="hero_detail_balance_data">平衡性数据</string>
+    <string name="hero_detail_win_rate">胜率</string>
+    <string name="hero_detail_pick_rate">登场率</string>
+    <string name="hero_detail_kda">KDA</string>
+    <string name="hero_detail_description">英雄描述</string>
+    <string name="hero_detail_skills">技能介绍</string>
+    <string name="hero_detail_counter_tips">克制提示</string>
+    <string name="hero_detail_synergies">阵容搭配</string>
+    <string name="hero_detail_recommended_build">推荐出装</string>
 </resources>

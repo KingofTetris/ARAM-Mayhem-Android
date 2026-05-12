@@ -2,6 +2,10 @@ package com.aram.mayhem.network.di;
 
 import com.aram.mayhem.common.Constants;
 import com.aram.mayhem.data.local.TokenStore;
+import com.aram.mayhem.network.api.AugmentApi;
+import com.aram.mayhem.network.api.AuthApi;
+import com.aram.mayhem.network.api.CommunityApi;
+import com.aram.mayhem.network.api.HeroApi;
 import com.aram.mayhem.network.interceptor.AuthInterceptor;
 import com.aram.mayhem.network.interceptor.TokenRefreshInterceptor;
 import com.google.gson.Gson;
@@ -63,5 +67,29 @@ public class NetworkModule {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    public AuthApi provideAuthApi(Retrofit retrofit) {
+        return retrofit.create(AuthApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public HeroApi provideHeroApi(Retrofit retrofit) {
+        return retrofit.create(HeroApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public AugmentApi provideAugmentApi(Retrofit retrofit) {
+        return retrofit.create(AugmentApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public CommunityApi provideCommunityApi(Retrofit retrofit) {
+        return retrofit.create(CommunityApi.class);
     }
 }
