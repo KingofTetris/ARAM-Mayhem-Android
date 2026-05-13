@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="win_rate">#FF4CAF50</color>
+    <color name="pick_rate">#FF2196F3</color>
+
+    <color name="synergy_completed">#FF4CAF50</color>
+    <color name="synergy_partial">#FFFFB800</color>
+    <color name="synergy_inactive">#FF9E9E9E</color>
+    <color name="progress_background">#FFE0E0E0</color>
+</resources>

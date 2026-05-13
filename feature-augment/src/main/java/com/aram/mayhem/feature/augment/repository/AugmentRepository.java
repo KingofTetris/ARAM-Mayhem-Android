@@ -8,8 +8,11 @@ import com.aram.mayhem.data.local.dao.AugmentDao;
 import com.aram.mayhem.data.local.entity.AugmentEntity;
 import com.aram.mayhem.network.api.AugmentApi;
 import com.aram.mayhem.network.dto.AugmentDetailResponse;
+import com.aram.mayhem.network.dto.AugmentRecommendRequest;
+import com.aram.mayhem.network.dto.AugmentRecommendResponse;
 import com.aram.mayhem.network.dto.AugmentResponse;
 import com.aram.mayhem.network.dto.PageResponse;
+import com.aram.mayhem.network.dto.SynergyProgressResponse;
 import com.aram.mayhem.ui.model.AugmentUiModel;
 
 import java.util.ArrayList;
@@ -104,6 +107,58 @@ public class AugmentRepository {
             @Override
             public void onFailure(Call<Result<AugmentDetailResponse>> call, Throwable t) {
                 loadDetailFromCache(augmentId, result);
+            }
+        });
+
+        return result;
+    }
+
+    public LiveData<List<SynergyProgressResponse>> getSynergyProgress(List<Long> augmentIds) {
+        MutableLiveData<List<SynergyProgressResponse>> result = new MutableLiveData<>();
+
+        String idsParam = augmentIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        augmentApi.getSynergyProgress(idsParam).enqueue(new Callback<Result<List<SynergyProgressResponse>>>() {
+            @Override
+            public void onResponse(Call<Result<List<SynergyProgressResponse>>> call, Response<Result<List<SynergyProgressResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<SynergyProgressResponse> data = response.body().getData();
+                    result.setValue(data != null ? data : Collections.emptyList());
+                } else {
+                    result.setValue(Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result<List<SynergyProgressResponse>>> call, Throwable t) {
+                result.setValue(Collections.emptyList());
+            }
+        });
+
+        return result;
+    }
+
+    public LiveData<List<AugmentRecommendResponse>> getRecommendations(long heroId, List<Long> selectedAugmentIds) {
+        MutableLiveData<List<AugmentRecommendResponse>> result = new MutableLiveData<>();
+
+        AugmentRecommendRequest request = new AugmentRecommendRequest(heroId, selectedAugmentIds);
+
+        augmentApi.getRecommendations(request).enqueue(new Callback<Result<List<AugmentRecommendResponse>>>() {
+            @Override
+            public void onResponse(Call<Result<List<AugmentRecommendResponse>>> call, Response<Result<List<AugmentRecommendResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<AugmentRecommendResponse> data = response.body().getData();
+                    result.setValue(data != null ? data : Collections.emptyList());
+                } else {
+                    result.setValue(Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result<List<AugmentRecommendResponse>>> call, Throwable t) {
+                result.setValue(Collections.emptyList());
             }
         });
 
