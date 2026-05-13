@@ -1,6 +1,10 @@
 package com.aram.mayhem.feature.hero;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,6 +40,8 @@ public class HeroListFragment extends Fragment {
     private HeroListViewModel viewModel;
     private HeroCardAdapter adapter;
     private OnHeroSelectedListener heroSelectedListener;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private boolean wasOffline = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -60,7 +66,37 @@ public class HeroListFragment extends Fragment {
         setupRecyclerView();
         setupSearchToolbar();
         setupTierFilterChips();
+        setupOfflineDetection();
         observeViewModel();
+    }
+
+    private void setupOfflineDetection() {
+        ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return;
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLost(@NonNull Network network) {
+                wasOffline = true;
+                if (getView() != null) {
+                    Snackbar.make(getView(), "网络已断开，正在显示缓存数据", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                if (wasOffline && getView() != null) {
+                    Snackbar.make(getView(), "网络已恢复", Snackbar.LENGTH_SHORT).show();
+                    viewModel.retry();
+                }
+                wasOffline = false;
+            }
+        };
+
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+        cm.registerNetworkCallback(request, networkCallback);
     }
 
     private void setupRecyclerView() {
@@ -167,6 +203,12 @@ public class HeroListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (networkCallback != null) {
+            ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                cm.unregisterNetworkCallback(networkCallback);
+            }
+        }
         binding = null;
         searchEditText = null;
     }
