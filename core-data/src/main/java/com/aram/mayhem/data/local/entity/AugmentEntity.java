@@ -13,7 +13,9 @@ public class AugmentEntity {
     @PrimaryKey
     public long id;
 
-    public String name;
+    public String nameZh;
+
+    public String nameEn;
 
     public String description;
 
@@ -21,7 +23,19 @@ public class AugmentEntity {
 
     public String synergySet;
 
+    public String synergySet2;
+
+    public String synergySet3;
+
     public String iconUrl;
+
+    public double winRate;
+
+    public double pickRate;
+
+    public double avgPlacement;
+
+    public String tier;
 
     public boolean isTrap;
 

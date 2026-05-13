@@ -1,0 +1,293 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "ed2739e5a613f35623a2c9800e3def86",
+    "entities": [
+      {
+        "tableName": "heroes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `title` TEXT, `role` TEXT, `tier` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avatarUrl` TEXT, `description` TEXT, `skills` TEXT, `counterTips` TEXT, `synergies` TEXT, `avgKills` REAL NOT NULL, `avgDeaths` REAL NOT NULL, `avgAssists` REAL NOT NULL, `recommendedBuild` TEXT, `isTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameZh",
+            "columnName": "nameZh",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameEn",
+            "columnName": "nameEn",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tier",
+            "columnName": "tier",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "winRate",
+            "columnName": "winRate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pickRate",
+            "columnName": "pickRate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatarUrl",
+            "columnName": "avatarUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "skills",
+            "columnName": "skills",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "counterTips",
+            "columnName": "counterTips",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "synergies",
+            "columnName": "synergies",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "avgKills",
+            "columnName": "avgKills",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avgDeaths",
+            "columnName": "avgDeaths",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avgAssists",
+            "columnName": "avgAssists",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recommendedBuild",
+            "columnName": "recommendedBuild",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isTrap",
+            "columnName": "isTrap",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_heroes_tier",
+            "unique": false,
+            "columnNames": [
+              "tier"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_heroes_tier` ON `${TABLE_NAME}` (`tier`)"
+          },
+          {
+            "name": "index_heroes_role",
+            "unique": false,
+            "columnNames": [
+              "role"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_heroes_role` ON `${TABLE_NAME}` (`role`)"
+          },
+          {
+            "name": "index_heroes_nameZh",
+            "unique": false,
+            "columnNames": [
+              "nameZh"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_heroes_nameZh` ON `${TABLE_NAME}` (`nameZh`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "augments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `description` TEXT, `quality` TEXT, `synergySet` TEXT, `synergySet2` TEXT, `synergySet3` TEXT, `iconUrl` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avgPlacement` REAL NOT NULL, `tier` TEXT, `isTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameZh",
+            "columnName": "nameZh",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameEn",
+            "columnName": "nameEn",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "quality",
+            "columnName": "quality",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "synergySet",
+            "columnName": "synergySet",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "synergySet2",
+            "columnName": "synergySet2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "synergySet3",
+            "columnName": "synergySet3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "iconUrl",
+            "columnName": "iconUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "winRate",
+            "columnName": "winRate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pickRate",
+            "columnName": "pickRate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avgPlacement",
+            "columnName": "avgPlacement",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tier",
+            "columnName": "tier",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isTrap",
+            "columnName": "isTrap",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_augments_quality",
+            "unique": false,
+            "columnNames": [
+              "quality"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_augments_quality` ON `${TABLE_NAME}` (`quality`)"
+          },
+          {
+            "name": "index_augments_synergySet",
+            "unique": false,
+            "columnNames": [
+              "synergySet"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_augments_synergySet` ON `${TABLE_NAME}` (`synergySet`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ed2739e5a613f35623a2c9800e3def86')"
+    ]
+  }
+}

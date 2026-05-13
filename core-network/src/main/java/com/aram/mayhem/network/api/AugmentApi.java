@@ -1,6 +1,9 @@
 package com.aram.mayhem.network.api;
 
 import com.aram.mayhem.common.Result;
+import com.aram.mayhem.network.dto.AugmentDetailResponse;
+import com.aram.mayhem.network.dto.AugmentResponse;
+import com.aram.mayhem.network.dto.PageResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -10,13 +13,15 @@ import retrofit2.http.Query;
 public interface AugmentApi {
 
     @GET("api/augments")
-    Call<Result<Object>> getAugments(
+    Call<Result<PageResponse<AugmentResponse>>> getAugments(
             @Query("quality") String quality,
-            @Query("synergySet") String synergySet
+            @Query("synergySet") String synergySet,
+            @Query("page") int page,
+            @Query("size") int size
     );
 
     @GET("api/augments/{id}")
-    Call<Result<Object>> getAugmentDetail(@Path("id") long id);
+    Call<Result<AugmentDetailResponse>> getAugmentDetail(@Path("id") long id);
 
     @GET("api/augments/synergy-progress")
     Call<Result<Object>> getSynergyProgress(@Query("augmentIds") String augmentIds);

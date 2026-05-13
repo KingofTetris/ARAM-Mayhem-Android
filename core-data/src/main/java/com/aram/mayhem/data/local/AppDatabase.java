@@ -13,7 +13,7 @@ import com.aram.mayhem.data.local.entity.AugmentEntity;
 
 @Database(
         entities = {HeroEntity.class, AugmentEntity.class},
-        version = 2,
+        version = 3,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
