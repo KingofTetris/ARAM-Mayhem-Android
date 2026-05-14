@@ -36,7 +36,22 @@
         android:id="@+id/navigation_community"
         android:name="com.aram.mayhem.feature.community.CommunityFeedFragment"
         android:label="@string/tab_community"
-        tools:layout="@layout/fragment_community_feed" />
+        tools:layout="@layout/fragment_community_feed">
+        <action
+            android:id="@+id/action_community_to_detail"
+            app:destination="@id/navigation_strategy_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_strategy_detail"
+        android:name="com.aram.mayhem.feature.community.StrategyDetailFragment"
+        android:label="@string/strategy_detail"
+        tools:layout="@layout/fragment_strategy_detail">
+        <argument
+            android:name="strategyId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_bulletins"

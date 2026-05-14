@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter_by_tier">按Tier筛选</string>
+    <string name="tier_all">全部</string>
+    <string name="tier_s_plus">S+</string>
+    <string name="tier_s">S</string>
+    <string name="tier_a">A</string>
+    <string name="tier_b">B</string>
+    <string name="tier_c">C</string>
+    <string name="retry">重试</string>
+    <string name="publish_success">发布成功</string>
+    <string name="publish_failed">发布失败</string>
+    <string name="select_hero">选择英雄</string>
+    <string name="vote_success">投票成功</string>
+    <string name="vote_failed">投票失败</string>
+    <string name="augment_icon">强化符文图标</string>
+    <string name="item_icon">装备图标</string>
+    <string name="select_augments">选择强化符文</string>
+    <string name="select_items">选择装备</string>
+    <string name="publish_title">发布玩法</string>
+    <string name="hint_title">标题</string>
+    <string name="hint_description">描述（至少10个字）</string>
+    <string name="share_strategy">分享玩法</string>
+    <string name="release_success">发布成功！</string>
+    <string name="publish_strategy">发布玩法</string>
+    <string name="strategy_title">标题</string>
+    <string name="strategy_description">描述</string>
+    <string name="publish">发布</string>
+    <string name="search_hero">搜索英雄</string>
+    <string name="selected_augments">已选强化符文</string>
+    <string name="selected_items">已选装备</string>
+    <string name="back_to_community">返回社区</string>
+</resources>

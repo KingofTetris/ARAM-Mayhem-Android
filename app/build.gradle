@@ -66,6 +66,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycleVersion"
 
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:1.2.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
