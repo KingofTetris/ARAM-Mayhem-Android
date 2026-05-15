@@ -189,6 +189,7 @@ public class HeroRepository {
         entity.counterTips = detail.getCounterTips();
         entity.synergies = detail.getSynergies();
         entity.isTrap = false;
+        entity.isVersionTrap = detail.getIsVersionTrap() != null && detail.getIsVersionTrap();
         entity.updatedAt = System.currentTimeMillis();
 
         if (detail.getSkills() != null) {
@@ -272,7 +273,8 @@ public class HeroRepository {
                 detail.getAvgDeaths() != null ? detail.getAvgDeaths().doubleValue() : 0.0,
                 detail.getAvgAssists() != null ? detail.getAvgAssists().doubleValue() : 0.0,
                 detail.getRecommendedBuild(),
-                detail.getImageUrl()
+                detail.getImageUrl(),
+                detail.getIsVersionTrap() != null && detail.getIsVersionTrap()
         );
     }
 

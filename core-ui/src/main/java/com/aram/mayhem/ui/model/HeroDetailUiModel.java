@@ -22,12 +22,23 @@ public class HeroDetailUiModel {
     private final double avgAssists;
     private final String recommendedBuild;
     private final String imageUrl;
+    private final boolean versionTrap;
 
     public HeroDetailUiModel(long id, String nameZh, String nameEn, String title, String role,
                              Tier tier, double winRate, double pickRate, String description,
                              List<SkillUiModel> skills, List<String> counterTips, List<String> synergies,
                              double avgKills, double avgDeaths, double avgAssists,
                              String recommendedBuild, String imageUrl) {
+        this(id, nameZh, nameEn, title, role, tier, winRate, pickRate, description,
+                skills, counterTips, synergies, avgKills, avgDeaths, avgAssists,
+                recommendedBuild, imageUrl, false);
+    }
+
+    public HeroDetailUiModel(long id, String nameZh, String nameEn, String title, String role,
+                             Tier tier, double winRate, double pickRate, String description,
+                             List<SkillUiModel> skills, List<String> counterTips, List<String> synergies,
+                             double avgKills, double avgDeaths, double avgAssists,
+                             String recommendedBuild, String imageUrl, boolean versionTrap) {
         this.id = id;
         this.nameZh = nameZh;
         this.nameEn = nameEn;
@@ -45,6 +56,7 @@ public class HeroDetailUiModel {
         this.avgAssists = avgAssists;
         this.recommendedBuild = recommendedBuild;
         this.imageUrl = imageUrl;
+        this.versionTrap = versionTrap;
     }
 
     public long getId() { return id; }
@@ -64,6 +76,7 @@ public class HeroDetailUiModel {
     public double getAvgAssists() { return avgAssists; }
     public String getRecommendedBuild() { return recommendedBuild; }
     public String getImageUrl() { return imageUrl; }
+    public boolean isVersionTrap() { return versionTrap; }
 
     public String getWinRateDisplay() {
         return String.format("%.1f%%", winRate);

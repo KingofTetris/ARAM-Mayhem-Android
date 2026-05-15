@@ -49,16 +49,11 @@
         app:layout_constraintStart_toEndOf="@id/image_augment_icon"
         app:layout_constraintTop_toBottomOf="@id/text_augment_name" />
 
-    <TextView
-        android:id="@+id/text_trap_warning"
+    <com.aram.mayhem.ui.widget.VersionTrapBanner
+        android:id="@+id/trap_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_small"
-        android:background="@color/trap_warning"
-        android:padding="@dimen/padding_small"
-        android:text="@string/trap_banner"
-        android:textColor="@color/text_on_primary"
-        android:textSize="@dimen/text_small"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/image_augment_icon" />
 
@@ -69,7 +64,7 @@
         android:layout_marginTop="@dimen/padding_medium"
         android:textColor="@color/text_primary"
         android:textSize="@dimen/text_medium"
-        app:layout_constraintTop_toBottomOf="@id/text_trap_warning" />
+        app:layout_constraintTop_toBottomOf="@id/trap_banner" />
 
     <TextView
         android:id="@+id/label_synergy"

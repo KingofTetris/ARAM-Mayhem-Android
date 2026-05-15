@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.aram.mayhem.feature.augment.databinding.BottomSheetAugmentDetailBinding;
 import com.aram.mayhem.feature.augment.viewmodel.AugmentDetailViewModel;
 import com.aram.mayhem.ui.model.AugmentUiModel;
+import com.aram.mayhem.ui.widget.VersionTrapBanner;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 
@@ -73,9 +74,9 @@ public class AugmentDetailBottomSheet extends BottomSheetDialogFragment {
         binding.textAvgPlacement.setText(augment.getAvgPlacementDisplay());
 
         if (augment.isTrap()) {
-            binding.textTrapWarning.setVisibility(View.VISIBLE);
+            binding.trapBanner.setTrapInfo("该符文", "当前");
         } else {
-            binding.textTrapWarning.setVisibility(View.GONE);
+            binding.trapBanner.hide();
         }
 
         binding.chipGroupSynergy.removeAllViews();

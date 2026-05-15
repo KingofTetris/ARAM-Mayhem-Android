@@ -55,6 +55,8 @@ public class HeroEntity {
 
     public boolean isTrap;
 
+    public boolean isVersionTrap;
+
     public long updatedAt;
 
     public static class SkillData {

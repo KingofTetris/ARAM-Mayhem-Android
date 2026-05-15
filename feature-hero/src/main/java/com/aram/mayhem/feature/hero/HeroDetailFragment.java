@@ -102,6 +102,7 @@ public class HeroDetailFragment extends Fragment {
         
         updateBasicInfo(hero);
         updateBalanceData(hero);
+        updateVersionTrapBanner(hero);
         updateDescription(hero);
         updateSkills(hero);
         updateCounterTips(hero);
@@ -191,6 +192,15 @@ public class HeroDetailFragment extends Fragment {
             binding.textRecommendedBuild.setText(hero.getRecommendedBuild());
         } else {
             binding.cardBuild.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateVersionTrapBanner(HeroDetailUiModel hero) {
+        if (hero.isVersionTrap()) {
+            binding.versionTrapBanner.setTrapInfo(hero.getTier() != null ? hero.getTier().getLabel() : "当前");
+            binding.versionTrapBanner.setVisibility(View.VISIBLE);
+        } else {
+            binding.versionTrapBanner.hide();
         }
     }
 

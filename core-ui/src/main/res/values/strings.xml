@@ -69,4 +69,12 @@
     <string name="hero_detail_counter_tips">克制提示</string>
     <string name="hero_detail_synergies">阵容搭配</string>
     <string name="hero_detail_recommended_build">推荐出装</string>
+
+    <string name="bulletin_image">公告图片</string>
+    <string name="bulletin_type_version">版本更新</string>
+    <string name="bulletin_type_event">活动</string>
+    <string name="bulletin_type_notice">通知</string>
+    <string name="bulletin_pinned">置顶</string>
+    <string name="version_trap_warning">⚠ 版本陷阱警告</string>
+    <string name="strong_level_explain">强度等级说明</string>
 </resources>

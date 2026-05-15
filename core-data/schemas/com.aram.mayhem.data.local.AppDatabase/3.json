@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "ed2739e5a613f35623a2c9800e3def86",
+    "identityHash": "7793298edd6cc466cd156c87e8d8a79c",
     "entities": [
       {
         "tableName": "heroes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `title` TEXT, `role` TEXT, `tier` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avatarUrl` TEXT, `description` TEXT, `skills` TEXT, `counterTips` TEXT, `synergies` TEXT, `avgKills` REAL NOT NULL, `avgDeaths` REAL NOT NULL, `avgAssists` REAL NOT NULL, `recommendedBuild` TEXT, `isTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `title` TEXT, `role` TEXT, `tier` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avatarUrl` TEXT, `description` TEXT, `skills` TEXT, `counterTips` TEXT, `synergies` TEXT, `avgKills` REAL NOT NULL, `avgDeaths` REAL NOT NULL, `avgAssists` REAL NOT NULL, `recommendedBuild` TEXT, `isTrap` INTEGER NOT NULL, `isVersionTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -113,6 +113,12 @@
           {
             "fieldPath": "isTrap",
             "columnName": "isTrap",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isVersionTrap",
+            "columnName": "isVersionTrap",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -287,7 +293,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ed2739e5a613f35623a2c9800e3def86')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7793298edd6cc466cd156c87e8d8a79c')"
     ]
   }
 }

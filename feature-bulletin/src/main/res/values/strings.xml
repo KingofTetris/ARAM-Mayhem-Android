@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_bulletins">公告</string>
+    <string name="bulletin_image">公告图片</string>
+    <string name="retry">重试</string>
+    <string name="load_bulletin_failed">加载公告失败</string>
+</resources>

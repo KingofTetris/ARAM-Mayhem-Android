@@ -4,6 +4,7 @@ import com.aram.mayhem.common.Constants;
 import com.aram.mayhem.data.local.TokenStore;
 import com.aram.mayhem.network.api.AugmentApi;
 import com.aram.mayhem.network.api.AuthApi;
+import com.aram.mayhem.network.api.BulletinApi;
 import com.aram.mayhem.network.api.CommunityApi;
 import com.aram.mayhem.network.api.HeroApi;
 import com.aram.mayhem.network.interceptor.AuthInterceptor;
@@ -91,5 +92,11 @@ public class NetworkModule {
     @Singleton
     public CommunityApi provideCommunityApi(Retrofit retrofit) {
         return retrofit.create(CommunityApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public BulletinApi provideBulletinApi(Retrofit retrofit) {
+        return retrofit.create(BulletinApi.class);
     }
 }
