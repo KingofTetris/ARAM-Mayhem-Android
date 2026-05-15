@@ -11,13 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.aram.mayhem.data.local.TokenStore;
 import com.aram.mayhem.feature.community.databinding.FragmentPublishStrategyBinding;
 import com.aram.mayhem.feature.community.viewmodel.PublishStrategyViewModel;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -29,6 +34,9 @@ public class PublishStrategyFragment extends Fragment {
     private List<HeroOption> heroOptions = new ArrayList<>();
     private List<AugmentOption> augmentOptions = new ArrayList<>();
     private List<ItemOption> itemOptions = new ArrayList<>();
+
+    @Inject
+    TokenStore tokenStore;
 
     public static PublishStrategyFragment newInstance() {
         return new PublishStrategyFragment();
@@ -44,10 +52,26 @@ public class PublishStrategyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!isLoggedIn()) {
+            Toast.makeText(requireContext(), R.string.please_login_first, Toast.LENGTH_SHORT).show();
+            navigateToLogin();
+            return;
+        }
+
         viewModel = new ViewModelProvider(this).get(PublishStrategyViewModel.class);
 
         setupViews();
         observeViewModel();
+    }
+
+    private boolean isLoggedIn() {
+        return tokenStore.hasToken() && !tokenStore.isTokenExpired();
+    }
+
+    private void navigateToLogin() {
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigateUp();
     }
 
     private void setupViews() {

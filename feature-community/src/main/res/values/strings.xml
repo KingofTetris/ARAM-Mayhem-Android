@@ -30,4 +30,5 @@
     <string name="selected_augments">已选强化符文</string>
     <string name="selected_items">已选装备</string>
     <string name="back_to_community">返回社区</string>
+    <string name="please_login_first">请先登录</string>
 </resources>
