@@ -26,7 +26,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@Singleton
 /**
  * 英雄数据仓库
  *
@@ -34,6 +33,7 @@ import retrofit2.Response;
  * 功能：英雄列表分页查询、英雄详情查询、本地缓存更新
  * 关联：HeroApi, HeroDao, HeroEntity, HeroResponse
  */
+@Singleton
 public class HeroRepository {
 
     private final HeroApi heroApi;
