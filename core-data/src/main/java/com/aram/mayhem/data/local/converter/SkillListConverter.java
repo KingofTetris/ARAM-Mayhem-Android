@@ -43,4 +43,17 @@ public class SkillListConverter {
         Type type = new TypeToken<List<String>>() {}.getType();
         return gson.fromJson(data, type);
     }
+
+    @androidx.room.TypeConverter
+    public String fromLongList(List<Long> list) {
+        if (list == null) return null;
+        return gson.toJson(list);
+    }
+
+    @androidx.room.TypeConverter
+    public List<Long> toLongList(String data) {
+        if (data == null) return Collections.emptyList();
+        Type type = new TypeToken<List<Long>>() {}.getType();
+        return gson.fromJson(data, type);
+    }
 }

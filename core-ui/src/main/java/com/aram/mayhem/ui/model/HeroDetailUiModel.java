@@ -7,7 +7,7 @@ import java.util.List;
  * 英雄详情 UI 模型
  *
  * 数据流向：HeroDetailResponse → HeroDetailUiModel → HeroDetailFragment
- * 用途：英雄详情页展示（含技能、克制、协同、推荐出装）
+ * 用途：英雄详情页展示（含技能、克制、协同、推荐出装、推荐强化符文）
  */
 public class HeroDetailUiModel {
 
@@ -27,6 +27,7 @@ public class HeroDetailUiModel {
     private final double avgDeaths;
     private final double avgAssists;
     private final String recommendedBuild;
+    private final List<Long> recommendedAugmentIds;
     private final String imageUrl;
     private final boolean versionTrap;
 
@@ -34,17 +35,8 @@ public class HeroDetailUiModel {
                              Tier tier, double winRate, double pickRate, String description,
                              List<SkillUiModel> skills, List<String> counterTips, List<String> synergies,
                              double avgKills, double avgDeaths, double avgAssists,
-                             String recommendedBuild, String imageUrl) {
-        this(id, nameZh, nameEn, title, role, tier, winRate, pickRate, description,
-                skills, counterTips, synergies, avgKills, avgDeaths, avgAssists,
-                recommendedBuild, imageUrl, false);
-    }
-
-    public HeroDetailUiModel(long id, String nameZh, String nameEn, String title, String role,
-                             Tier tier, double winRate, double pickRate, String description,
-                             List<SkillUiModel> skills, List<String> counterTips, List<String> synergies,
-                             double avgKills, double avgDeaths, double avgAssists,
-                             String recommendedBuild, String imageUrl, boolean versionTrap) {
+                             String recommendedBuild, List<Long> recommendedAugmentIds,
+                             String imageUrl, boolean versionTrap) {
         this.id = id;
         this.nameZh = nameZh;
         this.nameEn = nameEn;
@@ -61,6 +53,7 @@ public class HeroDetailUiModel {
         this.avgDeaths = avgDeaths;
         this.avgAssists = avgAssists;
         this.recommendedBuild = recommendedBuild;
+        this.recommendedAugmentIds = recommendedAugmentIds;
         this.imageUrl = imageUrl;
         this.versionTrap = versionTrap;
     }
@@ -81,6 +74,7 @@ public class HeroDetailUiModel {
     public double getAvgDeaths() { return avgDeaths; }
     public double getAvgAssists() { return avgAssists; }
     public String getRecommendedBuild() { return recommendedBuild; }
+    public List<Long> getRecommendedAugmentIds() { return recommendedAugmentIds; }
     public String getImageUrl() { return imageUrl; }
     public boolean isVersionTrap() { return versionTrap; }
 

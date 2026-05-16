@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_avatar">用户头像</string>
+    <string name="profile_nickname_default">未登录</string>
+    <string name="profile_email_default">点击登录</string>
+    <string name="profile_my_strategies">我的投稿</string>
+    <string name="profile_my_favorites">我的收藏</string>
+    <string name="profile_settings">设置</string>
+    <string name="profile_logout">退出登录</string>
+    <string name="profile_logout_confirm">确定要退出登录吗？</string>
+    <string name="profile_logout_cancel">取消</string>
+    <string name="profile_logout_ok">确定</string>
+    <string name="profile_strategy_count">投稿 %d</string>
+    <string name="profile_favorite_count">收藏 %d</string>
+    <string name="profile_load_failed">加载资料失败</string>
+    <string name="profile_not_logged_in">请先登录</string>
+    <string name="settings_display_mode">深色模式</string>
+    <string name="settings_light_mode">浅色</string>
+    <string name="settings_dark_mode">深色</string>
+    <string name="settings_notification">通知推送</string>
+    <string name="settings_version">版本 %s</string>
+    <string name="my_strategies_empty">暂无投稿，去社区发布吧</string>
+    <string name="my_strategies_delete_confirm">确定删除这篇攻略吗？</string>
+    <string name="my_strategies_delete_ok">删除</string>
+    <string name="my_strategies_delete_failed">删除失败</string>
+</resources>

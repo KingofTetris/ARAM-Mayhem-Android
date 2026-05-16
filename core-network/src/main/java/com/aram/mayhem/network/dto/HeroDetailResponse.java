@@ -57,6 +57,9 @@ public class HeroDetailResponse {
     @SerializedName("recommendedBuild")
     private String recommendedBuild;
 
+    @SerializedName("recommendedAugmentIds")
+    private List<Long> recommendedAugmentIds;
+
     @SerializedName("isVersionTrap")
     private Boolean isVersionTrap;
 
@@ -77,6 +80,7 @@ public class HeroDetailResponse {
     public Double getAvgDeaths() { return avgDeaths; }
     public Double getAvgAssists() { return avgAssists; }
     public String getRecommendedBuild() { return recommendedBuild; }
+    public List<Long> getRecommendedAugmentIds() { return recommendedAugmentIds; }
     public Boolean getIsVersionTrap() { return isVersionTrap; }
 
     public static class SkillResponse {

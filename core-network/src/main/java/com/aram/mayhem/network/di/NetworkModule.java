@@ -7,6 +7,7 @@ import com.aram.mayhem.network.api.AuthApi;
 import com.aram.mayhem.network.api.BulletinApi;
 import com.aram.mayhem.network.api.CommunityApi;
 import com.aram.mayhem.network.api.HeroApi;
+import com.aram.mayhem.network.api.ProfileApi;
 import com.aram.mayhem.network.interceptor.AuthInterceptor;
 import com.aram.mayhem.network.interceptor.TokenRefreshInterceptor;
 import com.google.gson.Gson;
@@ -105,5 +106,11 @@ public class NetworkModule {
     @Singleton
     public BulletinApi provideBulletinApi(Retrofit retrofit) {
         return retrofit.create(BulletinApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public ProfileApi provideProfileApi(Retrofit retrofit) {
+        return retrofit.create(ProfileApi.class);
     }
 }

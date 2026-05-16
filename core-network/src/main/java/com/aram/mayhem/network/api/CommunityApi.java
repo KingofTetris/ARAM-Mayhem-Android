@@ -68,6 +68,15 @@ public interface CommunityApi {
     Call<Result<java.util.List<StrategyListResponse>>> getMyStrategies();
 
     /**
+     * 删除攻略
+     *
+     * @param id 攻略ID
+     * @return Call<Result<Void>> 删除结果
+     */
+    @DELETE("api/strategies/{id}")
+    Call<Result<Void>> deleteStrategy(@Path("id") long id);
+
+    /**
      * 投票（点赞/点踩）
      *
      * @param strategyId 攻略ID

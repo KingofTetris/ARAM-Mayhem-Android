@@ -200,6 +200,32 @@ public class HeroDetailFragment extends Fragment {
         } else {
             binding.cardBuild.setVisibility(View.GONE);
         }
+
+        updateRecommendedAugments(hero);
+    }
+
+    /**
+     * 更新推荐强化符文展示
+     *
+     * 作用：将英雄详情中的 recommendedAugmentIds 以 Chip 形式展示
+     * 实现：遍历 ID 列表，创建 Chip 添加到 ChipGroup
+     *
+     * @param hero 英雄详情 UI 模型
+     */
+    private void updateRecommendedAugments(HeroDetailUiModel hero) {
+        if (hero.getRecommendedAugmentIds() != null && !hero.getRecommendedAugmentIds().isEmpty()) {
+            binding.cardAugments.setVisibility(View.VISIBLE);
+            binding.chipGroupAugments.removeAllViews();
+            for (Long augmentId : hero.getRecommendedAugmentIds()) {
+                Chip chip = new Chip(requireContext());
+                chip.setText("符文 #" + augmentId);
+                chip.setClickable(false);
+                chip.setCheckable(false);
+                binding.chipGroupAugments.addView(chip);
+            }
+        } else {
+            binding.cardAugments.setVisibility(View.GONE);
+        }
     }
 
     private void updateVersionTrapBanner(HeroDetailUiModel hero) {

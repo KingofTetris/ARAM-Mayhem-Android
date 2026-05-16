@@ -63,6 +63,25 @@
         android:id="@+id/navigation_profile"
         android:name="com.aram.mayhem.feature.profile.ProfileFragment"
         android:label="@string/tab_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_navigation_profile_to_myStrategies"
+            app:destination="@id/navigation_my_strategies" />
+        <action
+            android:id="@+id/action_navigation_profile_to_settings"
+            app:destination="@id/navigation_settings" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my_strategies"
+        android:name="com.aram.mayhem.feature.profile.MyStrategiesFragment"
+        android:label="@string/profile_my_strategies"
+        tools:layout="@layout/fragment_my_strategies" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.aram.mayhem.feature.profile.SettingsFragment"
+        android:label="@string/profile_settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>

@@ -43,5 +43,6 @@
     <string name="hero_detail_counter_tips">克制技巧</string>
     <string name="hero_detail_synergies">阵容羁绊</string>
     <string name="hero_detail_recommended_build">推荐出装</string>
+    <string name="hero_detail_recommended_augments">推荐强化符文</string>
     <string name="retry">重试</string>
 </resources>

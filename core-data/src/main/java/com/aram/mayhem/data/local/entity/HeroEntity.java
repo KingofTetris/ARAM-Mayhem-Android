@@ -61,6 +61,8 @@ public class HeroEntity {
 
     public String recommendedBuild;
 
+    public List<Long> recommendedAugmentIds;
+
     public boolean isTrap;
 
     public boolean isVersionTrap;

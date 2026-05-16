@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Source name="~.*_Generated_.*\.java"/>
+    </Match>
+    <Match>
+        <Source name="~.*Hilt_.*\.java"/>
+    </Match>
+    <Match>
+        <Package name="~com\.aram\.mayhem\.dagger.*"/>
+    </Match>
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+</FindBugsFilter>

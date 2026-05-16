@@ -299,6 +299,7 @@ public class HeroRepository {
         entity.avgDeaths = detail.getAvgDeaths() != null ? detail.getAvgDeaths().doubleValue() : 0.0;
         entity.avgAssists = detail.getAvgAssists() != null ? detail.getAvgAssists().doubleValue() : 0.0;
         entity.recommendedBuild = detail.getRecommendedBuild();
+        entity.recommendedAugmentIds = detail.getRecommendedAugmentIds();
         entity.counterTips = detail.getCounterTips();
         entity.synergies = detail.getSynergies();
         entity.isTrap = false;
@@ -377,6 +378,7 @@ public class HeroRepository {
                 entity.avgDeaths,
                 entity.avgAssists,
                 entity.recommendedBuild,
+                entity.recommendedAugmentIds,
                 entity.avatarUrl
         );
     }
@@ -416,6 +418,7 @@ public class HeroRepository {
                 detail.getAvgDeaths() != null ? detail.getAvgDeaths().doubleValue() : 0.0,
                 detail.getAvgAssists() != null ? detail.getAvgAssists().doubleValue() : 0.0,
                 detail.getRecommendedBuild(),
+                detail.getRecommendedAugmentIds(),
                 detail.getImageUrl(),
                 detail.getIsVersionTrap() != null && detail.getIsVersionTrap()
         );
