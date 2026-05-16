@@ -1,61 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small"
-    app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="@dimen/card_elevation">
+    android:layout_height="wrap_content">
 
+    <!-- 滑动删除背景层：左滑时露出的红色区域 -->
     <LinearLayout
+        android:id="@+id/layout_delete_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/error"
+        android:gravity="end|center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_medium">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_strategy_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/text_large"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/text_strategy_hero"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_tiny"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/text_medium" />
-
-            <TextView
-                android:id="@+id/text_strategy_score"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_tiny"
-                android:textColor="@color/text_hint"
-                android:textSize="@dimen/text_small" />
-
-        </LinearLayout>
+        android:paddingEnd="@dimen/padding_large">
 
         <ImageView
-            android:id="@+id/image_delete"
             android:layout_width="@dimen/icon_size_large"
             android:layout_height="@dimen/icon_size_large"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/spacing_small"
             android:contentDescription="@string/my_strategies_delete_ok"
-            android:src="@android:drawable/ic_menu_delete" />
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:text="@string/my_strategies_delete_ok"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <!-- 前景层：攻略卡片内容 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="@dimen/card_elevation">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_medium">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_strategy_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_strategy_hero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_medium" />
+
+                <TextView
+                    android:id="@+id/text_strategy_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:textColor="@color/text_hint"
+                    android:textSize="@dimen/text_small" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_delete"
+                android:layout_width="@dimen/icon_size_large"
+                android:layout_height="@dimen/icon_size_large"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:contentDescription="@string/my_strategies_delete_ok"
+                android:src="@android:drawable/ic_menu_delete" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

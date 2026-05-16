@@ -379,7 +379,8 @@ public class HeroRepository {
                 entity.avgAssists,
                 entity.recommendedBuild,
                 entity.recommendedAugmentIds,
-                entity.avatarUrl
+                entity.avatarUrl,
+                false
         );
     }
 

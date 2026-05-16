@@ -23,4 +23,11 @@
     <string name="my_strategies_delete_confirm">确定删除这篇攻略吗？</string>
     <string name="my_strategies_delete_ok">删除</string>
     <string name="my_strategies_delete_failed">删除失败</string>
+    <string name="login_title">登录</string>
+    <string name="login_email_hint">邮箱</string>
+    <string name="login_password_hint">密码</string>
+    <string name="login_submit">登录</string>
+    <string name="login_cancel">取消</string>
+    <string name="login_empty_fields">请输入邮箱和密码</string>
+    <string name="login_success">登录成功</string>
 </resources>

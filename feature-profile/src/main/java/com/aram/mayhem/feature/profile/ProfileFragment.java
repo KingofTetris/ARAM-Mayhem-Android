@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,20 +18,31 @@ import com.aram.mayhem.feature.profile.viewmodel.ProfileViewModel;
 import com.aram.mayhem.network.dto.UserProfileResponse;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 /**
- * 用户资料页（个人中心模块）
+ * 个人中心页（个人中心模块）
  *
- * 功能：展示用户信息（头像、昵称、邮箱、攻略数、收藏数）、功能菜单、退出登录
- * 导航：我的投稿 → MyStrategiesFragment；设置 → SettingsFragment
- * 关联：ProfileViewModel, UserProfileResponse
+ * 功能：展示用户资料（头像、昵称、邮箱、投稿数、收藏数）、登录/退出登录、
+ *       导航至"我的投稿"和"设置"子页面
+ * 导航：我的投稿 → MyStrategiesFragment、设置 → SettingsFragment
+ * 关联组件：ProfileViewModel
+ *
+ * @see ProfileViewModel
+ * @see MyStrategiesFragment
+ * @see SettingsFragment
  */
 @AndroidEntryPoint
 public class ProfileFragment extends Fragment {
 
+    /** 退出登录后重启 MainActivity 时传递的 Intent 标志键 */
+    public static final String EXTRA_LOGGED_OUT = "extra_logged_out";
+
+    /** 视图绑定对象 */
     private FragmentProfileBinding binding;
+    /** 个人中心 ViewModel */
     private ProfileViewModel viewModel;
 
     @Nullable
@@ -49,53 +61,86 @@ public class ProfileFragment extends Fragment {
         setupClickListeners();
         observeViewModel();
 
-        viewModel.loadUserProfile();
+        // 根据登录状态决定加载用户资料还是显示未登录状态
+        if (viewModel.isLoggedIn()) {
+            viewModel.loadUserProfile();
+        } else {
+            showNotLoggedInState();
+        }
     }
 
     /**
-     * 设置点击事件监听器
+     * 设置各 UI 元素的点击监听器
+     *
+     * 逻辑：用户信息区域和"我的投稿"在未登录时弹出登录对话框；
+     *       "设置"无需登录即可进入；退出按钮弹出确认对话框
      */
     private void setupClickListeners() {
+        // 未登录时点击用户信息区域弹出登录对话框
+        binding.layoutUserInfo.setOnClickListener(v -> {
+            if (!viewModel.isLoggedIn()) {
+                showLoginDialog();
+            }
+        });
+
+        // 已登录跳转我的投稿，未登录弹出登录对话框
         binding.menuMyStrategies.setOnClickListener(v -> {
-            Navigation.findNavController(v)
-                    .navigate(R.id.action_navigation_profile_to_myStrategies);
+            if (viewModel.isLoggedIn()) {
+                Navigation.findNavController(v).navigate(R.id.navigation_my_strategies);
+            } else {
+                showLoginDialog();
+            }
         });
 
+        // 设置页面无需登录即可进入
         binding.menuSettings.setOnClickListener(v -> {
-            Navigation.findNavController(v)
-                    .navigate(R.id.action_navigation_profile_to_settings);
+            Navigation.findNavController(v).navigate(R.id.navigation_settings);
         });
 
+        // 退出登录按钮
         binding.btnLogout.setOnClickListener(v -> showLogoutConfirmDialog());
     }
 
     /**
-     * 观察 ViewModel 数据变化
+     * 观察 ViewModel 的 LiveData 数据变化并更新 UI
+     *
+     * 监听项：用户资料、加载状态、错误信息、退出登录事件、登录成功事件
      */
     private void observeViewModel() {
+        // 监听用户资料变化，绑定到 UI
         viewModel.getUserProfile().observe(getViewLifecycleOwner(), this::bindUserProfile);
 
+        // 监听加载状态，控制进度条可见性
         viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressLoading.setVisibility(loading ? View.VISIBLE : View.GONE);
         });
 
+        // 监听错误信息，显示在昵称位置
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null && !error.isEmpty()) {
                 binding.textNickname.setText(error);
             }
         });
 
+        // 监听退出登录事件，重启应用并跳转到个人中心页
         viewModel.getLogoutEvent().observe(getViewLifecycleOwner(), loggedOut -> {
             if (Boolean.TRUE.equals(loggedOut)) {
                 navigateToLogin();
             }
         });
+
+        // 监听登录成功事件，自动刷新用户资料
+        viewModel.getLoginSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (Boolean.TRUE.equals(success)) {
+                viewModel.loadUserProfile();
+            }
+        });
     }
 
     /**
-     * 绑定用户资料数据到 UI
+     * 将用户资料数据绑定到 UI 控件
      *
-     * @param profile 用户资料响应
+     * @param profile 用户资料响应对象，null 时跳过绑定
      */
     private void bindUserProfile(UserProfileResponse profile) {
         if (profile == null) return;
@@ -104,7 +149,10 @@ public class ProfileFragment extends Fragment {
         binding.textEmail.setText(profile.email);
         binding.textStrategyCount.setText(String.valueOf(profile.strategyCount));
         binding.textFavoriteCount.setText(String.valueOf(profile.favoriteCount));
+        // 已登录状态显示退出按钮
+        binding.btnLogout.setVisibility(View.VISIBLE);
 
+        // 头像加载：使用 Glide 圆形裁剪
         if (profile.avatarUrl != null && !profile.avatarUrl.isEmpty()) {
             Glide.with(this)
                     .load(profile.avatarUrl)
@@ -114,7 +162,57 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
+     * 显示未登录状态
+     *
+     * 逻辑：昵称显示"未登录"、邮箱显示"点击登录"、投稿和收藏归零、隐藏退出按钮
+     */
+    private void showNotLoggedInState() {
+        binding.textNickname.setText(R.string.profile_nickname_default);
+        binding.textEmail.setText(R.string.profile_email_default);
+        binding.textStrategyCount.setText("0");
+        binding.textFavoriteCount.setText("0");
+        // 未登录时隐藏退出按钮
+        binding.btnLogout.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示登录对话框
+     *
+     * 逻辑：弹出 Material Design 对话框，包含邮箱和密码输入框；
+     *       空字段校验 → 调用 ViewModel.login() 发起登录请求
+     */
+    private void showLoginDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_login, null, false);
+
+        TextInputEditText editEmail = dialogView.findViewById(R.id.edit_email);
+        TextInputEditText editPassword = dialogView.findViewById(R.id.edit_password);
+        TextView textError = dialogView.findViewById(R.id.text_login_error);
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.login_title)
+                .setView(dialogView)
+                .setNegativeButton(R.string.login_cancel, null)
+                .setPositiveButton(R.string.login_submit, (dialog, which) -> {
+                    String email = editEmail.getText() != null ? editEmail.getText().toString().trim() : "";
+                    String password = editPassword.getText() != null ? editPassword.getText().toString().trim() : "";
+
+                    // 空字段校验
+                    if (email.isEmpty() || password.isEmpty()) {
+                        textError.setText(R.string.login_empty_fields);
+                        textError.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    viewModel.login(email, password);
+                })
+                .show();
+    }
+
+    /**
      * 显示退出登录确认对话框
+     *
+     * 逻辑：用户确认后调用 ViewModel.logout() 清除 Token 并触发退出事件
      */
     private void showLogoutConfirmDialog() {
         new MaterialAlertDialogBuilder(requireContext())
@@ -126,21 +224,20 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * 退出登录后跳转到登录页
+     * 退出登录后重启应用
      *
-     * 作用：清除 Token 后重定向到登录界面
-     * 实现：通过导航图 action 跳转，或启动 LoginActivity
+     * 逻辑：通过 PackageManager 获取应用启动 Intent，添加 CLEAR_TASK + NEW_TASK 标志
+     *       清除 Activity 栈，附带 EXTRA_LOGGED_OUT 标志让 MainActivity 自动切换到个人中心 Tab
      */
     private void navigateToLogin() {
-        Intent loginIntent = new Intent();
-        loginIntent.setPackage(requireActivity().getPackageName());
-        loginIntent.setAction("com.aram.mayhem.ACTION_LOGIN");
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        if (loginIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            startActivity(loginIntent);
-            requireActivity().finish();
+        Intent intent = requireActivity().getPackageManager()
+                .getLaunchIntentForPackage(requireActivity().getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra(EXTRA_LOGGED_OUT, true);
+            startActivity(intent);
         }
+        requireActivity().finish();
     }
 
     @Override
