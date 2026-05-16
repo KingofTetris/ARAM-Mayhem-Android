@@ -15,7 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 主 Activity
  *
@@ -23,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：英雄列表 → 英雄详情、符文列表、公告列表、社区攻略
  * 关联：OnHeroSelectedListener, NavController
  */
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity implements OnHeroSelectedListener {
 
     private ActivityMainBinding binding;

@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 攻略详情页
  *
@@ -30,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：从 CommunityFeedFragment 点击攻略进入
  * 关联：StrategyDetailViewModel, VoteButton, ItemListAdapter, AugmentListAdapter
  */
+@AndroidEntryPoint
 public class StrategyDetailFragment extends Fragment {
 
     private FragmentStrategyDetailBinding binding;

@@ -13,6 +13,13 @@ import com.aram.mayhem.feature.profile.databinding.FragmentProfileBinding;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+/**
+ * 用户资料页
+ *
+ * 功能：展示用户信息（头像、昵称、攻略数、收藏数）、设置入口
+ * 导航：点击攻略数 → 我的攻略列表；点击设置 → 设置页
+ * 关联：ProfileViewModel（后续扩展）
+ */
 @AndroidEntryPoint
 public class ProfileFragment extends Fragment {
 

@@ -28,7 +28,6 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 符文列表页
  *
@@ -36,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：点击符文卡片 → AugmentDetailBottomSheet
  * 关联：AugmentViewModel, AugmentCardAdapter, SearchToolbar, StatefulLayout
  */
+@AndroidEntryPoint
 public class AugmentListFragment extends Fragment {
 
     private FragmentAugmentListBinding binding;

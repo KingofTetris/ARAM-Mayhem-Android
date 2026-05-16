@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 发布攻略页
  *
@@ -34,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：发布成功 → ReleaseSuccessFragment
  * 关联：PublishStrategyViewModel, ItemListAdapter, AugmentListAdapter
  */
+@AndroidEntryPoint
 public class PublishStrategyFragment extends Fragment {
 
     private FragmentPublishStrategyBinding binding;

@@ -15,13 +15,13 @@ import com.aram.mayhem.feature.hero.databinding.ItemTierExplainBinding;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 强度等级说明弹窗
  *
  * 功能：弹窗展示梯级评级（S+/S/A/B/C）的含义说明
  * 触发：英雄列表页筛选栏的"?"图标点击
  */
+@AndroidEntryPoint
 public class StrongLevelExplainFragment extends Fragment {
 
     private FragmentStrongLevelExplainBinding binding;

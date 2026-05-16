@@ -21,7 +21,6 @@ import com.aram.mayhem.ui.widget.PaginationScrollListener;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 社区攻略流页
  *
@@ -29,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：点击攻略 → StrategyDetailFragment；发布按钮 → PublishStrategyFragment
  * 关联：StrategyFeedViewModel, StrategyCardAdapter
  */
+@AndroidEntryPoint
 public class CommunityFeedFragment extends Fragment implements StrategyCardAdapter.OnStrategyClickListener {
 
     private FragmentCommunityFeedBinding binding;

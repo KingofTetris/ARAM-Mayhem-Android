@@ -32,7 +32,6 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 英雄列表页
  *
@@ -40,6 +39,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：点击英雄卡片 → HeroDetailFragment
  * 关联：HeroListViewModel, HeroCardAdapter, SearchToolbar, StatefulLayout
  */
+@AndroidEntryPoint
 public class HeroListFragment extends Fragment {
 
     private FragmentHeroListBinding binding;
@@ -85,6 +85,7 @@ public class HeroListFragment extends Fragment {
             @Override
             public void onLost(@NonNull Network network) {
                 wasOffline = true;
+                viewModel.setOffline(true);
                 if (getView() != null) {
                     Snackbar.make(getView(), "网络已断开，正在显示缓存数据", Snackbar.LENGTH_LONG).show();
                 }
@@ -93,7 +94,7 @@ public class HeroListFragment extends Fragment {
             @Override
             public void onAvailable(@NonNull Network network) {
                 if (wasOffline && getView() != null) {
-                    Snackbar.make(getView(), "网络已恢复", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "网络已恢复，正在刷新数据", Snackbar.LENGTH_SHORT).show();
                     viewModel.retry();
                 }
                 wasOffline = false;

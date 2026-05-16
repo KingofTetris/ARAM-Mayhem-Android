@@ -27,7 +27,6 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 符文推荐页
  *
@@ -35,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：从 AugmentDetailBottomSheet 或底部导航进入
  * 关联：AugmentRecommendViewModel, AugmentRecommendAdapter, SynergyProgressAdapter
  */
+@AndroidEntryPoint
 public class AugmentRecommendFragment extends Fragment {
 
     private FragmentAugmentRecommendBinding binding;

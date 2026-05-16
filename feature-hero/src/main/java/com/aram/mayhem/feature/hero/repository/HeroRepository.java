@@ -29,8 +29,8 @@ import retrofit2.Response;
 /**
  * 英雄数据仓库
  *
- * 数据源策略：优先网络 → 失败时回退本地缓存
- * 功能：英雄列表分页查询、英雄详情查询、本地缓存更新
+ * 数据源策略：离线优先（Room 缓存 → 网络请求 → 更新缓存）
+ * 功能：英雄列表分页查询、英雄详情查询、本地缓存更新、离线模式支持
  * 关联：HeroApi, HeroDao, HeroEntity, HeroResponse
  */
 @Singleton
@@ -38,6 +38,9 @@ public class HeroRepository {
 
     private final HeroApi heroApi;
     private final HeroDao heroDao;
+
+    /** 离线模式标记：true 表示当前无网络连接 */
+    private volatile boolean isOffline = false;
 
     @Inject
     public HeroRepository(HeroApi heroApi, HeroDao heroDao) {
@@ -54,10 +57,35 @@ public class HeroRepository {
     }
 
     /**
-     * 获取英雄列表（英雄模块）
+     * 设置离线模式状态
+     *
+     * 作用：由 ViewModel 调用，通知 Repository 当前网络状态
+     * 影响：离线模式下跳过网络请求，直接返回缓存数据
+     *
+     * @param offline true 表示离线，false 表示在线
+     */
+    public void setOffline(boolean offline) {
+        this.isOffline = offline;
+    }
+
+    /**
+     * 获取离线模式状态
+     *
+     * @return true 表示当前处于离线模式
+     */
+    public boolean isOffline() {
+        return isOffline;
+    }
+
+    /**
+     * 获取英雄列表（英雄模块 - 离线优先策略）
      *
      * 作用：从服务器分页获取英雄列表，支持关键词搜索、梯级筛选、排序
-     * 实现：优先请求网络 → 成功写入本地缓存 → 失败时回退本地缓存
+     * 离线优先策略：
+     *   1. 先从 Room 缓存读取数据，如果有缓存立即返回
+     *   2. 如果在线，发起网络请求获取最新数据
+     *   3. 网络成功：更新 Room 缓存 + 返回最新数据
+     *   4. 网络失败：保持缓存数据不变
      *
      * @param page 页码（从0开始）
      * @param size 每页数量
@@ -67,25 +95,38 @@ public class HeroRepository {
      * @return LiveData<List<HeroUiModel>> 可观察的英雄UI模型列表
      */
     public LiveData<List<HeroUiModel>> getHeroes(int page, int size, String keyword, String tier, String sortBy) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<List<HeroUiModel>> result = new MutableLiveData<>();
 
-        // 调用 Retrofit 接口发起异步网络请求：获取英雄列表
+        // 步骤1：离线优先 - 先从 Room 缓存读取
+        new Thread(() -> {
+            LiveData<List<HeroEntity>> cached = heroDao.getAllHeroes();
+            List<HeroEntity> cachedList = cached.getValue();
+            if (cachedList != null && !cachedList.isEmpty()) {
+                List<HeroUiModel> cachedUiModels = cachedList.stream()
+                        .map(this::convertEntityToUiModel)
+                        .collect(Collectors.toList());
+                result.postValue(cachedUiModels);
+            }
+        }).start();
+
+        // 步骤2：如果离线模式，跳过网络请求
+        if (isOffline) {
+            return result;
+        }
+
+        // 步骤3：发起网络请求获取最新数据
         heroApi.getHeroes(keyword, tier, sortBy, page, size).enqueue(new Callback<Result<PageResponse<HeroResponse>>>() {
             @Override
             public void onResponse(Call<Result<PageResponse<HeroResponse>>> call, Response<Result<PageResponse<HeroResponse>>> response) {
-                // 判断：HTTP请求成功 + 响应体不为空 + 业务状态码成功
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     PageResponse<HeroResponse> pageData = response.body().getData();
-                    // 判断分页数据有效：数据不为空且记录列表不为空
                     if (pageData != null && pageData.getRecords() != null) {
-                        // 网络数据 → UI模型转换（网络数据直接用于显示）
                         List<HeroUiModel> uiModels = pageData.getRecords().stream()
                                 .map(HeroRepository.this::convertToUiModel)
                                 .collect(Collectors.toList());
                         result.setValue(uiModels);
 
-                        // 异步写入本地缓存：网络数据 → 数据实体 → Room数据库
+                        // 异步更新本地缓存
                         new Thread(() -> {
                             List<HeroEntity> entities = pageData.getRecords().stream()
                                     .map(HeroRepository.this::convertToEntity)
@@ -93,19 +134,18 @@ public class HeroRepository {
                             heroDao.insertAll(entities);
                         }).start();
                     } else {
-                        // 数据为空：设置空列表
                         result.setValue(Collections.emptyList());
                     }
                 } else {
-                    // 业务失败：回退到本地缓存
-                    loadFromCache(result);
+                    // 业务失败：保持缓存数据（步骤1已返回缓存）
+                    ensureNonEmptyResult(result);
                 }
             }
 
             @Override
             public void onFailure(Call<Result<PageResponse<HeroResponse>>> call, Throwable t) {
-                // 网络异常：回退到本地缓存
-                loadFromCache(result);
+                // 网络异常：保持缓存数据（步骤1已返回缓存）
+                ensureNonEmptyResult(result);
             }
         });
 
@@ -113,31 +153,45 @@ public class HeroRepository {
     }
 
     /**
-     * 获取英雄详情（英雄模块）
+     * 获取英雄详情（英雄模块 - 离线优先策略）
      *
      * 作用：根据英雄ID获取完整英雄信息，包括技能、出装、克制关系等
-     * 实现：优先请求网络 → 成功写入本地缓存 → 失败时回退本地缓存
+     * 离线优先策略：
+     *   1. 先从 Room 缓存读取详情，如果有缓存立即返回
+     *   2. 如果在线，发起网络请求获取最新数据
+     *   3. 网络成功：更新 Room 缓存 + 返回最新数据
+     *   4. 网络失败：保持缓存数据不变
      *
      * @param heroId 英雄ID
      * @return LiveData<HeroDetailUiModel> 可观察的英雄详情UI模型
      */
     public LiveData<HeroDetailUiModel> getHeroDetail(long heroId) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<HeroDetailUiModel> result = new MutableLiveData<>();
 
-        // 调用 Retrofit 接口发起异步网络请求：获取英雄详情
+        // 步骤1：离线优先 - 先从 Room 缓存读取详情
+        new Thread(() -> {
+            LiveData<HeroEntity> cached = heroDao.getHeroById(heroId);
+            HeroEntity cachedEntity = cached.getValue();
+            if (cachedEntity != null) {
+                result.postValue(convertEntityToDetailUiModel(cachedEntity));
+            }
+        }).start();
+
+        // 步骤2：如果离线模式，跳过网络请求
+        if (isOffline) {
+            return result;
+        }
+
+        // 步骤3：发起网络请求获取最新数据
         heroApi.getHeroDetail(heroId).enqueue(new Callback<Result<HeroDetailResponse>>() {
             @Override
             public void onResponse(Call<Result<HeroDetailResponse>> call, Response<Result<HeroDetailResponse>> response) {
-                // 判断：HTTP请求成功 + 响应体不为空 + 业务状态码成功
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     HeroDetailResponse detail = response.body().getData();
-                    // 判断详情数据有效
                     if (detail != null) {
-                        // 网络数据 → UI模型转换并设置到 LiveData
                         result.setValue(convertToDetailUiModel(detail));
 
-                        // 异步写入本地缓存：详情数据 → 数据实体 → Room数据库
+                        // 异步更新本地缓存
                         new Thread(() -> {
                             HeroEntity entity = convertDetailToEntity(detail);
                             List<HeroEntity> list = new ArrayList<>();
@@ -146,15 +200,13 @@ public class HeroRepository {
                         }).start();
                     }
                 } else {
-                    // 业务失败：回退到本地缓存
-                    loadDetailFromCache(heroId, result);
+                    // 业务失败：保持缓存数据（步骤1已返回缓存）
                 }
             }
 
             @Override
             public void onFailure(Call<Result<HeroDetailResponse>> call, Throwable t) {
-                // 网络异常：回退到本地缓存
-                loadDetailFromCache(heroId, result);
+                // 网络异常：保持缓存数据（步骤1已返回缓存）
             }
         });
 
@@ -162,54 +214,16 @@ public class HeroRepository {
     }
 
     /**
-     * 从本地缓存加载英雄列表（私有方法）
+     * 确保结果非空（私有方法）
      *
-     * 作用：当网络请求失败时，回退从 Room 数据库加载本地缓存的英雄列表
-     * 实现：子线程查询 Room → UI模型转换 → postValue 到 LiveData
+     * 作用：当网络请求失败且缓存也为空时，设置空列表避免 UI 显示异常
      *
-     * @param result 可观察的 MutableLiveData，用于接收缓存数据
+     * @param result 可观察的 MutableLiveData
      */
-    private void loadFromCache(MutableLiveData<List<HeroUiModel>> result) {
-        // 子线程查询本地缓存
-        new Thread(() -> {
-            LiveData<List<HeroEntity>> cached = heroDao.getAllHeroes();
-            // 判断缓存有效：数据不为空
-            if (cached.getValue() != null && !cached.getValue().isEmpty()) {
-                // 缓存数据 → UI模型转换
-                List<HeroUiModel> uiModels = cached.getValue().stream()
-                        .map(this::convertEntityToUiModel)
-                        .collect(Collectors.toList());
-                // postValue：子线程切换到主线程设置数据
-                result.postValue(uiModels);
-            } else {
-                // 缓存为空：设置空列表
-                result.postValue(Collections.emptyList());
-            }
-        }).start();
-    }
-
-    /**
-     * 从本地缓存加载英雄详情（私有方法）
-     *
-     * 作用：当网络请求失败时，回退从 Room 数据库加载指定英雄的详情
-     * 实现：子线程查询 Room → UI模型转换 → postValue 到 LiveData
-     *
-     * @param heroId 英雄ID
-     * @param result 可观察的 MutableLiveData，用于接收缓存数据
-     */
-    private void loadDetailFromCache(long heroId, MutableLiveData<HeroDetailUiModel> result) {
-        // 子线程查询本地缓存
-        new Thread(() -> {
-            LiveData<HeroEntity> cached = heroDao.getHeroById(heroId);
-            // 判断缓存有效：数据不为空
-            if (cached.getValue() != null) {
-                // 缓存数据 → 详情UI模型转换
-                result.postValue(convertEntityToDetailUiModel(cached.getValue()));
-            } else {
-                // 缓存为空：设置null
-                result.postValue(null);
-            }
-        }).start();
+    private void ensureNonEmptyResult(MutableLiveData<List<HeroUiModel>> result) {
+        if (result.getValue() == null) {
+            result.postValue(Collections.emptyList());
+        }
     }
 
     /**

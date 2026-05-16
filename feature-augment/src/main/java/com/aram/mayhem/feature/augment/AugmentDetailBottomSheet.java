@@ -18,7 +18,6 @@ import com.google.android.material.chip.Chip;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 符文详情底部弹窗
  *
@@ -26,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 触发：AugmentListFragment 点击符文卡片
  * 关联：AugmentDetailViewModel, SynergyProgressAdapter, VersionTrapBanner
  */
+@AndroidEntryPoint
 public class AugmentDetailBottomSheet extends BottomSheetDialogFragment {
 
     private static final String ARG_AUGMENT_ID = "augment_id";

@@ -23,7 +23,6 @@ import com.google.android.material.chip.ChipGroup;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 /**
  * 英雄详情页
  *
@@ -31,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint;
  * 导航：从 HeroListFragment 点击英雄卡片进入
  * 关联：HeroDetailViewModel, VersionTrapBanner, SkillAdapter
  */
+@AndroidEntryPoint
 public class HeroDetailFragment extends Fragment {
 
     private FragmentHeroDetailBinding binding;

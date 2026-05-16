@@ -16,32 +16,77 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-@HiltViewModel
 /**
- * 公告详情 ViewModel
+ * 公告详情 ViewModel（公告模块）
  *
- * 功能：加载公告详情数据
+ * 功能：加载公告详情数据，管理详情页状态
  * 数据流：BulletinApi → LiveData<BulletinUiModel> → BulletinDetailFragment
+ *
+ * @see BulletinApi
+ * @see com.aram.mayhem.feature.bulletin.BulletinDetailFragment
  */
+@HiltViewModel
 public class BulletinDetailViewModel extends ViewModel {
 
+    /** 公告 API 接口 */
     private final BulletinApi bulletinApi;
 
+    /** 公告详情数据 */
     private final MutableLiveData<BulletinUiModel> bulletinDetail = new MutableLiveData<>();
+    /** 是否正在加载 */
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
+    /** 错误信息 */
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
+    /**
+     * 构造函数
+     *
+     * @param bulletinApi 公告 API 接口（通过 Hilt 依赖注入）
+     */
     @Inject
     public BulletinDetailViewModel(BulletinApi bulletinApi) {
         this.bulletinApi = bulletinApi;
     }
 
-    public LiveData<BulletinUiModel> getBulletinDetail() { return bulletinDetail; }
-    public LiveData<Boolean> getLoading() { return loading; }
-    public LiveData<String> getError() { return error; }
+    /**
+     * 获取公告详情的可观察数据
+     *
+     * @return LiveData<BulletinUiModel> 公告详情
+     */
+    public LiveData<BulletinUiModel> getBulletinDetail() {
+        return bulletinDetail;
+    }
 
+    /**
+     * 获取加载状态的可观察数据
+     *
+     * @return LiveData<Boolean> 是否正在加载
+     */
+    public LiveData<Boolean> getLoading() {
+        return loading;
+    }
+
+    /**
+     * 获取错误信息的可观察数据
+     *
+     * @return LiveData<String> 错误信息
+     */
+    public LiveData<String> getError() {
+        return error;
+    }
+
+    /**
+     * 加载公告详情
+     *
+     * 作用：根据公告ID从服务器获取公告详情数据
+     * 实现：调用 BulletinApi.getBulletinDetail()，成功后转换为 UI 模型
+     *
+     * @param id 公告ID
+     */
     public void loadBulletinDetail(long id) {
-        if (Boolean.TRUE.equals(loading.getValue())) return;
+        if (Boolean.TRUE.equals(loading.getValue())) {
+            return;
+        }
 
         loading.setValue(true);
         bulletinApi.getBulletinDetail(id).enqueue(new Callback<>() {
