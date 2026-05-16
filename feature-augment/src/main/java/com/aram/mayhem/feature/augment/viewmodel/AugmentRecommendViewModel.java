@@ -20,6 +20,12 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
+/**
+ * 符文推荐 ViewModel
+ *
+ * 功能：管理已选符文列表、请求套装进度和推荐结果
+ * 数据流：AugmentRepository → LiveData → AugmentRecommendFragment
+ */
 public class AugmentRecommendViewModel extends AndroidViewModel {
 
     private final AugmentRepository augmentRepository;

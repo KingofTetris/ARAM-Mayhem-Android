@@ -18,6 +18,13 @@ import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 公告详情页
+ *
+ * 功能：展示公告详情内容（标题、时间、正文、附件）
+ * 导航：从 BulletinListFragment 点击公告进入
+ * 关联：BulletinDetailViewModel
+ */
 public class BulletinDetailFragment extends Fragment {
 
     private static final String ARG_BULLETIN_ID = "bulletin_id";

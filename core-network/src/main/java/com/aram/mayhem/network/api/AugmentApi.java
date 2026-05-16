@@ -17,6 +17,13 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * 强化符文 API 接口
+ *
+ * 端点：GET /api/augments（列表）、GET /api/augments/{id}（详情）
+ *       GET /api/augments/synergy-progress（套装进度）、POST /api/augments/recommend（推荐）
+ * 关联：AugmentResponse, AugmentDetailResponse, SynergyProgressResponse, AugmentRecommendResponse
+ */
 public interface AugmentApi {
 
     @GET("api/augments")

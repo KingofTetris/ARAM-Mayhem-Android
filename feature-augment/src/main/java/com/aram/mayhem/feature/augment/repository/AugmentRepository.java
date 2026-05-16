@@ -28,6 +28,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton
+/**
+ * 符文数据仓库
+ *
+ * 数据源策略：优先网络 → 失败时回退本地缓存
+ * 功能：符文列表分页查询、符文详情查询、套装进度查询、推荐查询、本地缓存更新
+ * 关联：AugmentApi, AugmentDao, AugmentEntity, AugmentResponse
+ */
 public class AugmentRepository {
 
     private final AugmentApi augmentApi;

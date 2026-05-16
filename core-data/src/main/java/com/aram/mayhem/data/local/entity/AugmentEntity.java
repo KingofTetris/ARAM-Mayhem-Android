@@ -4,6 +4,14 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+/**
+ * 强化符文本地缓存实体
+ *
+ * 对应表：augments
+ * 索引：quality, synergySet
+ * 数据流向：Retrofit → AugmentRepository → Room → AugmentViewModel → UI
+ * 关联：AugmentDao
+ */
 @Entity(tableName = "augments", indices = {
         @Index(value = "quality"),
         @Index(value = "synergySet")

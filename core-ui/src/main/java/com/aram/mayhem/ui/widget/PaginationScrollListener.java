@@ -4,6 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * 分页滚动监听器
+ *
+ * 功能：RecyclerView 滚动到底部时触发加载更多回调
+ * 用途：英雄列表、符文列表、攻略列表的分页加载
+ */
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
     private final LinearLayoutManager layoutManager;

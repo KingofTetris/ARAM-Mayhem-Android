@@ -8,6 +8,12 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Room 类型转换器
+ *
+ * 功能：List<SkillData> ↔ JSON String、List<String> ↔ JSON String
+ * 用途：HeroEntity.skills 和 HeroEntity.counterTips/synergies 的 Room 存储转换
+ */
 public class SkillListConverter {
 
     private static final Gson gson = new Gson();

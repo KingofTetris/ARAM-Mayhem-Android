@@ -27,6 +27,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton
+/**
+ * 英雄数据仓库
+ *
+ * 数据源策略：优先网络 → 失败时回退本地缓存
+ * 功能：英雄列表分页查询、英雄详情查询、本地缓存更新
+ * 关联：HeroApi, HeroDao, HeroEntity, HeroResponse
+ */
 public class HeroRepository {
 
     private final HeroApi heroApi;

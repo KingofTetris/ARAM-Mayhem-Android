@@ -23,6 +23,13 @@ import com.bumptech.glide.Glide;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 攻略详情页
+ *
+ * 功能：展示攻略详情（标题、内容、英雄/符文搭配、投票）
+ * 导航：从 CommunityFeedFragment 点击攻略进入
+ * 关联：StrategyDetailViewModel, VoteButton, ItemListAdapter, AugmentListAdapter
+ */
 public class StrategyDetailFragment extends Fragment {
 
     private FragmentStrategyDetailBinding binding;

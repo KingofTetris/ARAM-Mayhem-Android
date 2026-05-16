@@ -2,6 +2,14 @@ package com.aram.mayhem.common;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * 统一 API 响应模型（与后端 Result 对应）
+ *
+ * 格式：{ code, message, data, timestamp }
+ * 用途：Retrofit 响应体解析，isSuccess() 判断请求是否成功
+ *
+ * @param <T> 响应数据类型
+ */
 public class Result<T> {
 
     @SerializedName("code")

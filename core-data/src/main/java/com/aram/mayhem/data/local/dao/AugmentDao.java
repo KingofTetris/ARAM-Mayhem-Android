@@ -10,6 +10,12 @@ import com.aram.mayhem.data.local.entity.AugmentEntity;
 
 import java.util.List;
 
+/**
+ * 强化符文数据访问对象
+ *
+ * 功能：符文列表查询（按品质/套装/关键词筛选）、单个符文查询、批量插入、清空
+ * 返回类型：LiveData（观察式）、List/Entity（同步，供推荐算法使用）
+ */
 @Dao
 public interface AugmentDao {
 

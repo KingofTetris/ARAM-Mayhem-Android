@@ -9,6 +9,14 @@ import androidx.security.crypto.MasterKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * JWT 令牌安全存储
+ *
+ * 存储：EncryptedSharedPreferences（AES256 加密）
+ * 内容：accessToken, refreshToken, tokenExpiresAt
+ * 用途：AuthInterceptor 读取 accessToken 附加请求头，TokenRefreshInterceptor 判断过期并刷新
+ * 关联：AuthInterceptor, TokenRefreshInterceptor
+ */
 @Singleton
 public class TokenStore {
 

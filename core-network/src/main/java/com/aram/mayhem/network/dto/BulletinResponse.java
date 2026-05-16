@@ -2,6 +2,7 @@ package com.aram.mayhem.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 公告响应模型（与后端 BulletinListVO/BulletinDetailVO 对应） */
 public class BulletinResponse {
 
     @SerializedName("id")

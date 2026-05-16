@@ -20,6 +20,13 @@ import com.google.android.material.tabs.TabLayout;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 公告列表页
+ *
+ * 功能：展示公告列表，支持类型筛选、分页加载、轮播图
+ * 导航：点击公告 → BulletinDetailFragment
+ * 关联：BulletinListViewModel, BulletinAdapter, BulletinCarouselView
+ */
 public class BulletinListFragment extends Fragment {
 
     private FragmentBulletinListBinding binding;

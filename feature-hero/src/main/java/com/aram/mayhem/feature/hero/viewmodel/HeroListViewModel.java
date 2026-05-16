@@ -19,6 +19,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import javax.inject.Inject;
 
 @HiltViewModel
+/**
+ * 英雄列表 ViewModel
+ *
+ * 功能：管理英雄列表数据（分页加载、筛选、搜索）、网络/本地数据源切换
+ * 数据流：HeroRepository → LiveData<HeroUiModel> → HeroListFragment
+ */
 public class HeroListViewModel extends AndroidViewModel {
 
     private final HeroRepository heroRepository;

@@ -23,6 +23,13 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * 网络层 Hilt 依赖注入模块
+ *
+ * 提供：Gson、OkHttpClient（含认证/刷新/日志拦截器）、Retrofit、各 API 接口实例
+ * 拦截器链：AuthInterceptor → TokenRefreshInterceptor → HttpLoggingInterceptor
+ * 超时配置：Constants.CONNECT_TIMEOUT/READ_TIMEOUT/WRITE_TIMEOUT
+ */
 @Module
 @InstallIn(SingletonComponent.class)
 public class NetworkModule {

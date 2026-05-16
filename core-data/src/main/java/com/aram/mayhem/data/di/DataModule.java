@@ -14,6 +14,12 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
 
+/**
+ * 数据层 Hilt 依赖注入模块
+ *
+ * 提供：AppDatabase（单例）、HeroDao、AugmentDao
+ * 生命周期：SingletonComponent（应用级单例）
+ */
 @Module
 @InstallIn(SingletonComponent.class)
 public class DataModule {

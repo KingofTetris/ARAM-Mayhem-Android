@@ -17,6 +17,12 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 @HiltViewModel
+/**
+ * 公告详情 ViewModel
+ *
+ * 功能：加载公告详情数据
+ * 数据流：BulletinApi → LiveData<BulletinUiModel> → BulletinDetailFragment
+ */
 public class BulletinDetailViewModel extends ViewModel {
 
     private final BulletinApi bulletinApi;

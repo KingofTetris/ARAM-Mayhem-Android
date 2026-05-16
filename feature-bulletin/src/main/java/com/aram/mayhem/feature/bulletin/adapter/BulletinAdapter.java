@@ -12,6 +12,13 @@ import com.aram.mayhem.feature.bulletin.databinding.ItemBulletinBinding;
 import com.aram.mayhem.ui.model.BulletinUiModel;
 import com.bumptech.glide.Glide;
 
+/**
+ * 公告列表适配器
+ *
+ * 数据源：BulletinUiModel 列表
+ * 布局：item_bulletin.xml
+ * 用途：BulletinListFragment 中的公告列表展示
+ */
 public class BulletinAdapter extends ListAdapter<BulletinUiModel, BulletinAdapter.BulletinViewHolder> {
 
     private OnBulletinClickListener listener;

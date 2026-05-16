@@ -17,6 +17,13 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 攻略卡片适配器
+ *
+ * 数据源：StrategyListResponse 列表
+ * 布局：item_strategy_card.xml
+ * 用途：CommunityFeedFragment 中的攻略列表展示
+ */
 public class StrategyCardAdapter extends RecyclerView.Adapter<StrategyCardAdapter.StrategyViewHolder> {
 
     private List<StrategyListResponse> strategies = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.aram.mayhem.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 符文详情响应模型（继承 AugmentResponse，与后端 AugmentVO 对应） */
 public class AugmentDetailResponse extends AugmentResponse {
 
     @SerializedName("description")

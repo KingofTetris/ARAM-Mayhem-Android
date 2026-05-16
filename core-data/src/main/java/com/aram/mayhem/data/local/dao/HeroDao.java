@@ -10,6 +10,12 @@ import com.aram.mayhem.data.local.entity.HeroEntity;
 
 import java.util.List;
 
+/**
+ * 英雄数据访问对象
+ *
+ * 功能：英雄列表查询（按梯级/定位/关键词筛选）、单个英雄查询、批量插入、清空
+ * 返回类型：LiveData（观察式）、int（同步）
+ */
 @Dao
 public interface HeroDao {
 

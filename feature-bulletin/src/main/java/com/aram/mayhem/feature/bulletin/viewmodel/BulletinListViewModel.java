@@ -19,6 +19,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import timber.log.Timber;
 
 @HiltViewModel
+/**
+ * 公告列表 ViewModel
+ *
+ * 功能：管理公告列表数据（分页加载、类型筛选）
+ * 数据流：BulletinApi → LiveData<BulletinUiModel> → BulletinListFragment
+ */
 public class BulletinListViewModel extends ViewModel {
 
     private final BulletinApi bulletinApi;

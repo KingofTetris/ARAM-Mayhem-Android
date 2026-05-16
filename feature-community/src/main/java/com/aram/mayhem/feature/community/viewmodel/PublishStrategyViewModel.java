@@ -18,6 +18,12 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
+/**
+ * 发布攻略 ViewModel
+ *
+ * 功能：管理攻略发布表单数据、提交发布请求
+ * 数据流：StrategyRepository → LiveData<StrategyDetailResponse> → PublishStrategyFragment
+ */
 public class PublishStrategyViewModel extends AndroidViewModel {
 
     private final StrategyRepository strategyRepository;

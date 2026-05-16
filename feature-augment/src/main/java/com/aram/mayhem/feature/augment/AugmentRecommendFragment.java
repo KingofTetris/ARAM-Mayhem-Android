@@ -28,6 +28,13 @@ import java.util.List;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 符文推荐页
+ *
+ * 功能：基于已选符文列表，展示套装进度和智能推荐
+ * 导航：从 AugmentDetailBottomSheet 或底部导航进入
+ * 关联：AugmentRecommendViewModel, AugmentRecommendAdapter, SynergyProgressAdapter
+ */
 public class AugmentRecommendFragment extends Fragment {
 
     private FragmentAugmentRecommendBinding binding;

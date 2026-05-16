@@ -27,6 +27,13 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 发布攻略页
+ *
+ * 功能：攻略发布表单（标题、内容、关联英雄/符文选择）
+ * 导航：发布成功 → ReleaseSuccessFragment
+ * 关联：PublishStrategyViewModel, ItemListAdapter, AugmentListAdapter
+ */
 public class PublishStrategyFragment extends Fragment {
 
     private FragmentPublishStrategyBinding binding;

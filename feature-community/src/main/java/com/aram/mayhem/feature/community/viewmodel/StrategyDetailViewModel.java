@@ -15,6 +15,12 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
+/**
+ * 攻略详情 ViewModel
+ *
+ * 功能：加载攻略详情、管理投票状态
+ * 数据流：StrategyRepository → LiveData<StrategyDetailResponse> → StrategyDetailFragment
+ */
 public class StrategyDetailViewModel extends AndroidViewModel {
 
     private final StrategyRepository strategyRepository;

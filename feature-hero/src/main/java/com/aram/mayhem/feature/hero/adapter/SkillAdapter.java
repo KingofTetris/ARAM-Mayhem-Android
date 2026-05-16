@@ -12,6 +12,13 @@ import com.aram.mayhem.ui.model.HeroDetailUiModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 英雄技能列表适配器
+ *
+ * 数据源：HeroDetailUiModel 中的技能列表
+ * 布局：item_skill.xml
+ * 用途：英雄详情页技能展示
+ */
 public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.SkillViewHolder> {
 
     private List<HeroDetailUiModel.SkillUiModel> skills = new ArrayList<>();

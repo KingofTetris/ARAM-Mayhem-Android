@@ -20,6 +20,13 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 公告轮播图组件
+ *
+ * 功能：首页顶部公告轮播，自动滚动 + 手动滑动
+ * 数据源：BulletinUiModel 列表
+ * 关联：BulletinListFragment, ViewPager2
+ */
 public class BulletinCarouselView extends LinearLayout {
 
     private ViewPager2 viewPager;

@@ -6,6 +6,12 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
+/**
+ * 认证 API 接口
+ *
+ * 端点：POST /api/auth/register（注册）、POST /api/auth/login（登录）、POST /api/auth/refresh（刷新令牌）
+ * 内部类：RegisterRequest, LoginRequest, RefreshRequest, AuthResponse
+ */
 public interface AuthApi {
 
     @POST("api/auth/register")

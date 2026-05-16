@@ -13,6 +13,13 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 认证拦截器
+ *
+ * 功能：从 TokenStore 读取 accessToken，自动附加 Authorization: Bearer 头
+ * 无 Token 时：直接放行（公开接口无需认证）
+ * 关联：TokenStore
+ */
 @Singleton
 public class AuthInterceptor implements Interceptor {
 

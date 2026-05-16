@@ -33,6 +33,13 @@ import java.util.List;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 英雄列表页
+ *
+ * 功能：展示英雄列表，支持梯级/定位筛选、关键词搜索、分页加载
+ * 导航：点击英雄卡片 → HeroDetailFragment
+ * 关联：HeroListViewModel, HeroCardAdapter, SearchToolbar, StatefulLayout
+ */
 public class HeroListFragment extends Fragment {
 
     private FragmentHeroListBinding binding;

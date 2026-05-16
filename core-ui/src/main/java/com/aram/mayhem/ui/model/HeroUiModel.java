@@ -2,6 +2,12 @@ package com.aram.mayhem.ui.model;
 
 import com.aram.mayhem.common.Tier;
 
+/**
+ * 英雄 UI 模型
+ *
+ * 数据流向：HeroEntity/Response → HeroUiModel → HeroCardAdapter → 列表项视图
+ * 用途：英雄列表卡片展示
+ */
 public class HeroUiModel {
 
     private final long id;

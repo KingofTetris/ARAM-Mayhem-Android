@@ -1,5 +1,11 @@
 package com.aram.mayhem.ui.model;
 
+/**
+ * 公告 UI 模型
+ *
+ * 数据流向：BulletinResponse → BulletinUiModel → BulletinAdapter/BulletinCarouselView
+ * 用途：公告列表和轮播图展示
+ */
 public class BulletinUiModel {
 
     private final long id;

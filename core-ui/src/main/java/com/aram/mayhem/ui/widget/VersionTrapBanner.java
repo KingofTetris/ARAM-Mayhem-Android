@@ -14,6 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+/**
+ * 版本陷阱横幅组件
+ *
+ * 功能：在英雄/符文详情页顶部显示"版本陷阱"警告横幅
+ * 触发条件：isVersionTrap = true 时显示
+ * 布局：横向警告图标 + 提示文字 + 关闭按钮
+ */
 public class VersionTrapBanner extends LinearLayout {
 
     private TextView textWarning;

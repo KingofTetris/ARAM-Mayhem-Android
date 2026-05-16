@@ -12,6 +12,12 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
 
+/**
+ * 状态布局组件
+ *
+ * 功能：管理 Loading / Content / Error / Empty 四种状态的切换
+ * 用途：所有列表页面的外层容器，统一状态展示逻辑
+ */
 public class StatefulLayout extends FrameLayout {
 
     private View layoutContent;

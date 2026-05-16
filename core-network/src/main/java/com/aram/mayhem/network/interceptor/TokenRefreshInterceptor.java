@@ -19,6 +19,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * 令牌刷新拦截器
+ *
+ * 功能：当收到 401 响应时，自动使用 refreshToken 换取新的 accessToken
+ * 流程：401 → 同步刷新请求 → 更新 TokenStore → 用新 Token 重试原请求
+ * 刷新失败：清除 TokenStore（用户需重新登录）
+ * 线程安全：synchronized 防止并发刷新
+ * 关联：TokenStore, Constants
+ */
 @Singleton
 public class TokenRefreshInterceptor implements Interceptor {
 

@@ -16,6 +16,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 出装物品列表适配器
+ *
+ * 数据源：物品名称列表
+ * 用途：攻略详情页和发布页中的推荐出装展示
+ */
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
 
     private List<StrategyDetailResponse.ItemResponse> items = new ArrayList<>();

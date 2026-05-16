@@ -6,6 +6,12 @@ import dagger.hilt.android.HiltAndroidApp;
 import timber.log.Timber;
 
 @HiltAndroidApp
+/**
+ * 应用入口类
+ *
+ * 功能：Hilt 注入入口（@HiltAndroidApp）、全局初始化
+ * 关联：所有 Hilt Module
+ */
 public class MayhemApplication extends Application {
 
     @Override

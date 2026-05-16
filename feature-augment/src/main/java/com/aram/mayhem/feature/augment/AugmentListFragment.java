@@ -29,6 +29,13 @@ import java.util.List;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 符文列表页
+ *
+ * 功能：展示强化符文列表，支持品质/套装筛选、搜索、分页加载
+ * 导航：点击符文卡片 → AugmentDetailBottomSheet
+ * 关联：AugmentViewModel, AugmentCardAdapter, SearchToolbar, StatefulLayout
+ */
 public class AugmentListFragment extends Fragment {
 
     private FragmentAugmentListBinding binding;

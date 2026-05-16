@@ -1,5 +1,11 @@
 package com.aram.mayhem.common;
 
+/**
+ * 全局常量定义
+ *
+ * 包含：后端 API 基础 URL、各模块 API 路径、网络超时配置、分页参数
+ * 注意：BASE_URL 需根据部署环境修改
+ */
 public final class Constants {
 
     private Constants() {

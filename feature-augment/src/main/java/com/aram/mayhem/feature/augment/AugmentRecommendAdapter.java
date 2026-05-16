@@ -17,6 +17,13 @@ import com.bumptech.glide.Glide;
 
 import java.util.Locale;
 
+/**
+ * 符文推荐列表适配器
+ *
+ * 数据源：AugmentRecommendResponse 列表
+ * 布局：item_augment_recommend.xml
+ * 用途：AugmentRecommendFragment 中的推荐结果展示
+ */
 public class AugmentRecommendAdapter extends ListAdapter<AugmentRecommendResponse, AugmentRecommendAdapter.ViewHolder> {
 
     private OnAugmentClickListener listener;

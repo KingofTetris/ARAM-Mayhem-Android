@@ -18,6 +18,12 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
+/**
+ * 套装进度 ViewModel
+ *
+ * 功能：根据符文 ID 列表查询套装进度
+ * 数据流：AugmentRepository → LiveData<List<SynergyProgressResponse>>
+ */
 public class SynergyProgressViewModel extends AndroidViewModel {
 
     private final AugmentRepository augmentRepository;

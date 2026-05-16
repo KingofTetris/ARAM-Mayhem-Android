@@ -14,6 +14,13 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * 社区攻略 API 接口
+ *
+ * 端点：GET /api/strategies（列表）、GET /api/strategies/{id}（详情）、POST /api/strategies（发布）
+ *       GET /api/strategies/my（我的攻略）、POST /api/strategies/{id}/vote（投票）、DELETE /api/strategies/{id}/vote（取消投票）
+ * 内部类：VoteRequest
+ */
 public interface CommunityApi {
 
     @GET("api/strategies")

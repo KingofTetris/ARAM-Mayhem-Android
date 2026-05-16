@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/** 符文推荐请求模型（与后端 AugmentRecommendRequest 对应） */
 public class AugmentRecommendRequest {
 
     @SerializedName("heroId")

@@ -17,6 +17,13 @@ import androidx.annotation.Nullable;
 import com.aram.mayhem.common.Constants;
 import com.aram.mayhem.ui.R;
 
+/**
+ * 搜索工具栏组件
+ *
+ * 功能：带搜索输入框的工具栏，支持防抖搜索回调
+ * 防抖延迟：Constants.SEARCH_DEBOUNCE_MS (300ms)
+ * 用途：英雄列表、符文列表页顶部搜索
+ */
 public class SearchToolbar extends FrameLayout {
 
     private EditText editText;

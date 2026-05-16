@@ -3,6 +3,12 @@ package com.aram.mayhem.ui.model;
 import com.aram.mayhem.common.Tier;
 import java.util.List;
 
+/**
+ * 英雄详情 UI 模型
+ *
+ * 数据流向：HeroDetailResponse → HeroDetailUiModel → HeroDetailFragment
+ * 用途：英雄详情页展示（含技能、克制、协同、推荐出装）
+ */
 public class HeroDetailUiModel {
 
     private final long id;

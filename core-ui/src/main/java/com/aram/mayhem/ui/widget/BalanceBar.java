@@ -12,6 +12,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * 平衡条组件
+ *
+ * 功能：显示胜率/选取率的进度条，支持渐变色
+ * 用途：英雄/符文列表卡片中的胜率条
+ */
 public class BalanceBar extends View {
 
     private static final int COLOR_POSITIVE = 0xFF4CAF50;

@@ -11,6 +11,14 @@ import com.aram.mayhem.data.local.dao.AugmentDao;
 import com.aram.mayhem.data.local.entity.HeroEntity;
 import com.aram.mayhem.data.local.entity.AugmentEntity;
 
+/**
+ * Room 本地数据库
+ *
+ * 表：heroes, augments
+ * 版本：3（fallbackToDestructiveMigration）
+ * 单例模式：双重检查锁
+ * 关联：HeroDao, AugmentDao, HeroEntity, AugmentEntity
+ */
 @Database(
         entities = {HeroEntity.class, AugmentEntity.class},
         version = 3,

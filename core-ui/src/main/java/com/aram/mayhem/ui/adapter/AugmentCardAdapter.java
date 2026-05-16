@@ -12,6 +12,13 @@ import com.aram.mayhem.ui.model.AugmentUiModel;
 import com.aram.mayhem.ui.databinding.ItemAugmentCardBinding;
 import com.bumptech.glide.Glide;
 
+/**
+ * 符文卡片列表适配器
+ *
+ * 数据源：AugmentUiModel 列表
+ * 布局：item_augment_card.xml
+ * 点击事件：通过 OnAugmentClickListener 回调跳转详情页
+ */
 public class AugmentCardAdapter extends ListAdapter<AugmentUiModel, AugmentCardAdapter.ViewHolder> {
 
     private OnAugmentClickListener listener;

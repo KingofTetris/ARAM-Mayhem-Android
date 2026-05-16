@@ -4,6 +4,12 @@ import com.aram.mayhem.ui.R;
 
 import java.util.Locale;
 
+/**
+ * 强化符文 UI 模型
+ *
+ * 数据流向：AugmentEntity/Response → AugmentUiModel → AugmentCardAdapter → 列表项视图
+ * 用途：符文列表卡片展示
+ */
 public class AugmentUiModel {
 
     private final long id;

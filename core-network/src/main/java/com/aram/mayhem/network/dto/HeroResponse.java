@@ -2,6 +2,7 @@ package com.aram.mayhem.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 英雄列表项响应模型（与后端 HeroListVO 对应） */
 public class HeroResponse {
 
     @SerializedName("id")

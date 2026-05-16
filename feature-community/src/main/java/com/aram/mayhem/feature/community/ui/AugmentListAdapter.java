@@ -16,6 +16,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 攻略关联符文列表适配器
+ *
+ * 数据源：符文名称/ID 列表
+ * 用途：攻略详情页和发布页中的关联符文展示
+ */
 public class AugmentListAdapter extends RecyclerView.Adapter<AugmentListAdapter.AugmentViewHolder> {
 
     private List<StrategyDetailResponse.AugmentResponse> augments = new ArrayList<>();

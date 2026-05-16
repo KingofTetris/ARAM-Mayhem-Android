@@ -24,6 +24,13 @@ import com.google.android.material.chip.ChipGroup;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 英雄详情页
+ *
+ * 功能：展示英雄详情（技能、克制、协同、推荐出装、版本陷阱标记）
+ * 导航：从 HeroListFragment 点击英雄卡片进入
+ * 关联：HeroDetailViewModel, VersionTrapBanner, SkillAdapter
+ */
 public class HeroDetailFragment extends Fragment {
 
     private FragmentHeroDetailBinding binding;

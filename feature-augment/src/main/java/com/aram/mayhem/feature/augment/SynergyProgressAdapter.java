@@ -14,6 +14,13 @@ import com.aram.mayhem.network.dto.SynergyProgressResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 套装进度适配器
+ *
+ * 数据源：SynergyProgressResponse 列表
+ * 布局：item_synergy_progress.xml
+ * 用途：符文详情弹窗和推荐页中的套装进度展示
+ */
 public class SynergyProgressAdapter extends RecyclerView.Adapter<SynergyProgressAdapter.ViewHolder> {
 
     private List<SynergyProgressResponse> items = new ArrayList<>();

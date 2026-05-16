@@ -18,6 +18,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import javax.inject.Inject;
 
 @HiltViewModel
+/**
+ * 符文列表 ViewModel
+ *
+ * 功能：管理符文列表数据（分页加载、品质/套装筛选、搜索）
+ * 数据流：AugmentRepository → LiveData<AugmentUiModel> → AugmentListFragment
+ */
 public class AugmentViewModel extends AndroidViewModel {
 
     private final AugmentRepository augmentRepository;

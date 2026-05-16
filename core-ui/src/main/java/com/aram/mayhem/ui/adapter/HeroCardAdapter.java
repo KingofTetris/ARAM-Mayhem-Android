@@ -12,6 +12,13 @@ import com.aram.mayhem.ui.model.HeroUiModel;
 import com.aram.mayhem.ui.databinding.ItemHeroCardBinding;
 import com.bumptech.glide.Glide;
 
+/**
+ * 英雄卡片列表适配器
+ *
+ * 数据源：HeroUiModel 列表
+ * 布局：item_hero_card.xml
+ * 点击事件：通过 OnHeroClickListener 回调跳转详情页
+ */
 public class HeroCardAdapter extends ListAdapter<HeroUiModel, HeroCardAdapter.ViewHolder> {
 
     private OnHeroClickListener listener;

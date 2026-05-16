@@ -15,6 +15,12 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
+/**
+ * 符文详情 ViewModel
+ *
+ * 功能：加载符文详情和套装进度数据
+ * 数据流：AugmentRepository → LiveData → AugmentDetailBottomSheet
+ */
 public class AugmentDetailViewModel extends AndroidViewModel {
 
     private final AugmentRepository augmentRepository;

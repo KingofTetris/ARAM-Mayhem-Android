@@ -9,6 +9,12 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.chip.Chip;
 
+/**
+ * 符文品质标签组件
+ *
+ * 功能：显示符文品质（银色/金色/棱彩），根据品质自动着色
+ * 用途：符文列表卡片和详情页
+ */
 public class QualityChip extends Chip {
 
     private String quality;

@@ -10,6 +10,12 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * 英雄 API 接口
+ *
+ * 端点：GET /api/heroes（列表）、GET /api/heroes/{id}（详情）
+ * 关联：HeroResponse, HeroDetailResponse, PageResponse
+ */
 public interface HeroApi {
 
     @GET("api/heroes")

@@ -15,6 +15,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import javax.inject.Inject;
 
 @HiltViewModel
+/**
+ * 英雄详情 ViewModel
+ *
+ * 功能：加载英雄详情数据，转换为 HeroDetailUiModel
+ * 数据流：HeroRepository → LiveData<HeroDetailUiModel> → HeroDetailFragment
+ */
 public class HeroDetailViewModel extends AndroidViewModel {
 
     private final HeroRepository heroRepository;

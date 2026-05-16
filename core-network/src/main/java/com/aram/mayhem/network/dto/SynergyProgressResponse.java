@@ -2,6 +2,7 @@ package com.aram.mayhem.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+/** 套装进度响应模型（与后端 SynergyProgressResponse 对应） */
 public class SynergyProgressResponse {
 
     @SerializedName("synergyName")

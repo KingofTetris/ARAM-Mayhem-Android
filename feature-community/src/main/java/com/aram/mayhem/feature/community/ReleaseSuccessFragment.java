@@ -13,6 +13,12 @@ import androidx.fragment.app.Fragment;
 import com.aram.mayhem.feature.community.databinding.FragmentReleaseSuccessBinding;
 import com.aram.mayhem.network.dto.StrategyDetailResponse;
 
+/**
+ * 发布成功页
+ *
+ * 功能：攻略发布成功后的确认页面，提供返回社区流按钮
+ * 导航：从 PublishStrategyFragment 发布成功后进入
+ */
 public class ReleaseSuccessFragment extends Fragment {
 
     private FragmentReleaseSuccessBinding binding;

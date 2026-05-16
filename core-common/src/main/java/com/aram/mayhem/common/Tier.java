@@ -2,6 +2,12 @@ package com.aram.mayhem.common;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * 英雄/符文梯级评级枚举
+ *
+ * 评级从高到低：S+(红) > S(橙) > A(金) > B(绿) > C(蓝)
+ * 用于列表页梯级标签着色和筛选
+ */
 public enum Tier {
     @SerializedName("S_PLUS")
     S_PLUS("S+", 0xFFE53E3E),

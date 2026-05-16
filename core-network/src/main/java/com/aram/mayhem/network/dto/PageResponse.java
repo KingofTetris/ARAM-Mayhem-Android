@@ -3,6 +3,7 @@ package com.aram.mayhem.network.dto;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/** 通用分页响应模型（与后端 PageResult 对应） */
 public class PageResponse<T> {
 
     @SerializedName("total")

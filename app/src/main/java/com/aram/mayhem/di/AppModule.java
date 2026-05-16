@@ -14,6 +14,12 @@ import dagger.hilt.components.SingletonComponent;
 
 @Module
 @InstallIn(SingletonComponent.class)
+/**
+ * 应用级 Hilt 依赖注入模块
+ *
+ * 提供：应用级单例服务（如 TokenStore 等）
+ * 生命周期：SingletonComponent（应用级单例）
+ */
 public class AppModule {
 
     @Provides

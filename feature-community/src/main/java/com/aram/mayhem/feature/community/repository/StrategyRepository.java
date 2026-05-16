@@ -21,6 +21,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton
+/**
+ * 攻略数据仓库
+ *
+ * 功能：攻略列表查询、攻略详情查询、攻略发布、投票/取消投票、我的攻略查询
+ * 关联：CommunityApi, StrategyListResponse, StrategyDetailResponse
+ */
 public class StrategyRepository {
 
     private final CommunityApi communityApi;

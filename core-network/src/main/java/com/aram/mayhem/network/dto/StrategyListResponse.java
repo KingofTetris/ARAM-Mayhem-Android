@@ -3,6 +3,7 @@ package com.aram.mayhem.network.dto;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/** 攻略列表项响应模型（与后端 StrategyListVO 对应） */
 public class StrategyListResponse {
 
     @SerializedName("id")

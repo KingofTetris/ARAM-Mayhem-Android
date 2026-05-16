@@ -13,6 +13,13 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.aram.mayhem.common.Tier;
 
+/**
+ * 梯级标签组件
+ *
+ * 功能：显示英雄/符文梯级评级（S+/S/A/B/C），根据梯级自动着色
+ * 颜色映射：Tier 枚举的 color 字段
+ * 用途：列表卡片和详情页的梯级标签
+ */
 public class TierBadgeView extends AppCompatTextView {
 
     private Tier tier;

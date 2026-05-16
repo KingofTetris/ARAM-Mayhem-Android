@@ -18,6 +18,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import javax.inject.Inject;
 
 @HiltViewModel
+/**
+ * 社区攻略流 ViewModel
+ *
+ * 功能：管理攻略列表数据（分页加载、排序）
+ * 数据流：StrategyRepository → LiveData<StrategyListResponse> → CommunityFeedFragment
+ */
 public class StrategyFeedViewModel extends AndroidViewModel {
 
     private final StrategyRepository strategyRepository;

@@ -13,6 +13,13 @@ import androidx.core.content.ContextCompat;
 
 import com.aram.mayhem.ui.R;
 
+/**
+ * 投票按钮组件
+ *
+ * 功能：攻略详情页的点赞/踩按钮，支持状态切换和动画
+ * 状态：未投票 / UP / DOWN
+ * 关联：StrategyDetailFragment
+ */
 public class VoteButton extends LinearLayout {
 
     private ImageView imageUp;

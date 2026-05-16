@@ -3,6 +3,7 @@ package com.aram.mayhem.network.dto;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/** 创建攻略请求模型（与后端 CreateStrategyRequest 对应） */
 public class CreateStrategyRequest {
 
     @SerializedName("heroId")

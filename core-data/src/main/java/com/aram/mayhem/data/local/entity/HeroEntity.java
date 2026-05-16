@@ -10,6 +10,14 @@ import com.aram.mayhem.data.local.converter.SkillListConverter;
 
 import java.util.List;
 
+/**
+ * 英雄本地缓存实体
+ *
+ * 对应表：heroes
+ * 索引：tier, role, nameZh
+ * 数据流向：Retrofit → HeroRepository → Room → HeroListViewModel → UI
+ * 关联：HeroDao, SkillListConverter
+ */
 @Entity(tableName = "heroes", indices = {
         @Index(value = "tier"),
         @Index(value = "role"),

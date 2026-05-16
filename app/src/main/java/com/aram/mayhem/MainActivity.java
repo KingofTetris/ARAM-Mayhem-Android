@@ -16,6 +16,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
+/**
+ * 主 Activity
+ *
+ * 功能：底部导航栏管理、Fragment 容器、英雄选中导航回调
+ * 导航：英雄列表 → 英雄详情、符文列表、公告列表、社区攻略
+ * 关联：OnHeroSelectedListener, NavController
+ */
 public class MainActivity extends AppCompatActivity implements OnHeroSelectedListener {
 
     private ActivityMainBinding binding;
