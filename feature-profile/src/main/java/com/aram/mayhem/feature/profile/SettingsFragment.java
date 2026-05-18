@@ -63,13 +63,13 @@ public class SettingsFragment extends Fragment {
     private void setupSwitches() {
         binding.switchDisplayMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             int displayMode = isChecked ? 1 : 0;
-            Timber.d("Display mode changed: %d", displayMode);
+            Timber.i("Settings: display_mode_change | value=%d | timestamp=%d", displayMode, System.currentTimeMillis());
             viewModel.updateProfile(null, null, displayMode, null);
         });
 
         binding.switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
             int notificationEnabled = isChecked ? 1 : 0;
-            Timber.d("Notification changed: %d", notificationEnabled);
+            Timber.i("Settings: notification_change | value=%d | timestamp=%d", notificationEnabled, System.currentTimeMillis());
             viewModel.updateProfile(null, null, null, notificationEnabled);
         });
     }
@@ -101,6 +101,16 @@ public class SettingsFragment extends Fragment {
             binding.switchNotification.setChecked(profile.notificationEnabled == 1);
 
             setupSwitches();
+        });
+
+        viewModel.getUpdateSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (Boolean.TRUE.equals(success)) {
+                Timber.i("Settings: save_success | timestamp=%d", System.currentTimeMillis());
+                android.widget.Toast.makeText(requireContext(), "设置已保存", android.widget.Toast.LENGTH_SHORT).show();
+            } else if (Boolean.FALSE.equals(success)) {
+                Timber.w("Settings: save_fail | timestamp=%d", System.currentTimeMillis());
+                android.widget.Toast.makeText(requireContext(), "保存失败，请重试", android.widget.Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
