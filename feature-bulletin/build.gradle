@@ -42,4 +42,8 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
 }

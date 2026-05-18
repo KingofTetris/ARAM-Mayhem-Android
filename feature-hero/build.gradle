@@ -47,6 +47,8 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     annotationProcessor "com.google.dagger:hilt-compiler:$hiltVersion"
 
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
     // Testing
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
