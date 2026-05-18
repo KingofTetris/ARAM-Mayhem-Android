@@ -47,6 +47,8 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<Boolean> logoutEvent = new MutableLiveData<>();
     /** 登录成功事件（true=登录成功） */
     private final MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
+    /** 注册成功事件（true=注册成功） */
+    private final MutableLiveData<Boolean> registerSuccess = new MutableLiveData<>();
 
     /**
      * 构造函数（Hilt 自动注入依赖）
@@ -74,6 +76,8 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<Boolean> getLogoutEvent() { return logoutEvent; }
     /** @return 登录成功事件 LiveData */
     public LiveData<Boolean> getLoginSuccess() { return loginSuccess; }
+    /** @return 注册成功事件 LiveData */
+    public LiveData<Boolean> getRegisterSuccess() { return registerSuccess; }
 
     /**
      * 判断用户是否已登录
@@ -159,34 +163,69 @@ public class ProfileViewModel extends ViewModel {
      */
     public void login(String email, String password) {
         loading.setValue(true);
+        Timber.i("AuthFlow: login_start | email=%s | timestamp=%d", email, System.currentTimeMillis());
         authApi.login(new AuthApi.LoginRequest(email, password)).enqueue(new retrofit2.Callback<>() {
             @Override
             public void onResponse(retrofit2.Call<com.aram.mayhem.common.Result<AuthApi.AuthResponse>> call,
                                    retrofit2.Response<com.aram.mayhem.common.Result<AuthApi.AuthResponse>> response) {
                 loading.setValue(false);
-                // 登录成功：保存令牌（expiresIn 单位为秒，需转为毫秒）
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     AuthApi.AuthResponse authResponse = response.body().getData();
                     if (authResponse != null) {
                         tokenStore.saveTokens(authResponse.accessToken, authResponse.refreshToken, authResponse.expiresIn * 1000);
                         loginSuccess.setValue(true);
-                        Timber.i("User logged in: email=%s", email);
+                        Timber.i("AuthFlow: login_success | email=%s | timestamp=%d", email, System.currentTimeMillis());
                     } else {
                         error.setValue("登录失败：服务器返回为空");
+                        Timber.w("AuthFlow: login_fail_empty_response | email=%s | timestamp=%d", email, System.currentTimeMillis());
                     }
                 } else {
-                    // 登录失败：邮箱或密码错误
                     error.setValue("邮箱或密码错误");
-                    Timber.w("Login failed: email=%s", email);
+                    Timber.w("AuthFlow: login_fail_invalid_credential | email=%s | timestamp=%d", email, System.currentTimeMillis());
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<com.aram.mayhem.common.Result<AuthApi.AuthResponse>> call, Throwable t) {
                 loading.setValue(false);
-                // 网络错误
                 error.setValue("网络错误：" + t.getMessage());
-                Timber.e(t, "Login network error: email=%s", email);
+                Timber.e(t, "AuthFlow: login_network_error | email=%s | timestamp=%d", email, System.currentTimeMillis());
+            }
+        });
+    }
+
+    /**
+     * 用户注册
+     *
+     * 作用：使用邮箱、密码和昵称进行注册，成功后自动登录并触发 registerSuccess 事件
+     * 实现：调用 AuthApi.register() 发起异步网络请求，成功后自动调用 login() 完成登录
+     *
+     * @param email    用户邮箱
+     * @param password 用户密码
+     * @param nickname 用户昵称
+     */
+    public void register(String email, String password, String nickname) {
+        loading.setValue(true);
+        Timber.i("AuthFlow: register_start | email=%s | nickname=%s | timestamp=%d", email, nickname, System.currentTimeMillis());
+        authApi.register(new AuthApi.RegisterRequest(email, password, nickname)).enqueue(new retrofit2.Callback<>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.aram.mayhem.common.Result<Object>> call,
+                                   retrofit2.Response<com.aram.mayhem.common.Result<Object>> response) {
+                loading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    registerSuccess.setValue(true);
+                    Timber.i("AuthFlow: register_success | email=%s | timestamp=%d", email, System.currentTimeMillis());
+                } else {
+                    error.setValue("注册失败：邮箱可能已被注册");
+                    Timber.w("AuthFlow: register_fail_duplicate | email=%s | timestamp=%d", email, System.currentTimeMillis());
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.aram.mayhem.common.Result<Object>> call, Throwable t) {
+                loading.setValue(false);
+                error.setValue("网络错误：" + t.getMessage());
+                Timber.e(t, "AuthFlow: register_network_error | email=%s | timestamp=%d", email, System.currentTimeMillis());
             }
         });
     }

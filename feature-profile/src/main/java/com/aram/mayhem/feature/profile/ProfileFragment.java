@@ -21,6 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * 个人中心页（个人中心模块）
@@ -135,6 +136,13 @@ public class ProfileFragment extends Fragment {
                 viewModel.loadUserProfile();
             }
         });
+
+        // 监听注册成功事件，自动登录
+        viewModel.getRegisterSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (Boolean.TRUE.equals(success)) {
+                android.widget.Toast.makeText(requireContext(), R.string.register_success, android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -188,8 +196,9 @@ public class ProfileFragment extends Fragment {
         TextInputEditText editEmail = dialogView.findViewById(R.id.edit_email);
         TextInputEditText editPassword = dialogView.findViewById(R.id.edit_password);
         TextView textError = dialogView.findViewById(R.id.text_login_error);
+        TextView textGotoRegister = dialogView.findViewById(R.id.text_goto_register);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        androidx.appcompat.app.AlertDialog loginDialog = new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.login_title)
                 .setView(dialogView)
                 .setNegativeButton(R.string.login_cancel, null)
@@ -197,7 +206,6 @@ public class ProfileFragment extends Fragment {
                     String email = editEmail.getText() != null ? editEmail.getText().toString().trim() : "";
                     String password = editPassword.getText() != null ? editPassword.getText().toString().trim() : "";
 
-                    // 空字段校验
                     if (email.isEmpty() || password.isEmpty()) {
                         textError.setText(R.string.login_empty_fields);
                         textError.setVisibility(View.VISIBLE);
@@ -206,7 +214,67 @@ public class ProfileFragment extends Fragment {
 
                     viewModel.login(email, password);
                 })
-                .show();
+                .create();
+
+        textGotoRegister.setOnClickListener(v -> {
+            Timber.i("Navigation: login_dialog -> register_dialog | userId=anonymous | timestamp=%d", System.currentTimeMillis());
+            loginDialog.dismiss();
+            showRegisterDialog();
+        });
+
+        loginDialog.show();
+    }
+
+    /**
+     * 显示注册对话框
+     *
+     * 作用：弹出注册表单，用户输入昵称、邮箱、密码和确认密码
+     * 实现：表单校验（空字段、密码一致性）→ 调用 ViewModel.register() → 注册成功后自动登录
+     */
+    private void showRegisterDialog() {
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_register, null, false);
+
+        TextInputEditText editNickname = dialogView.findViewById(R.id.edit_register_nickname);
+        TextInputEditText editEmail = dialogView.findViewById(R.id.edit_register_email);
+        TextInputEditText editPassword = dialogView.findViewById(R.id.edit_register_password);
+        TextInputEditText editConfirmPassword = dialogView.findViewById(R.id.edit_register_confirm_password);
+        TextView textError = dialogView.findViewById(R.id.text_register_error);
+        TextView textGotoLogin = dialogView.findViewById(R.id.text_goto_login);
+
+        androidx.appcompat.app.AlertDialog registerDialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.register_title)
+                .setView(dialogView)
+                .setNegativeButton(R.string.login_cancel, null)
+                .setPositiveButton(R.string.register_submit, (dialog, which) -> {
+                    String nickname = editNickname.getText() != null ? editNickname.getText().toString().trim() : "";
+                    String email = editEmail.getText() != null ? editEmail.getText().toString().trim() : "";
+                    String password = editPassword.getText() != null ? editPassword.getText().toString().trim() : "";
+                    String confirmPassword = editConfirmPassword.getText() != null ? editConfirmPassword.getText().toString().trim() : "";
+
+                    if (nickname.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                        textError.setText(R.string.register_empty_fields);
+                        textError.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    if (!password.equals(confirmPassword)) {
+                        textError.setText(R.string.register_password_mismatch);
+                        textError.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    viewModel.register(email, password, nickname);
+                })
+                .create();
+
+        textGotoLogin.setOnClickListener(v -> {
+            Timber.i("Navigation: register_dialog -> login_dialog | userId=anonymous | timestamp=%d", System.currentTimeMillis());
+            registerDialog.dismiss();
+            showLoginDialog();
+        });
+
+        registerDialog.show();
     }
 
     /**
