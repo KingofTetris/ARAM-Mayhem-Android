@@ -37,7 +37,7 @@ class HeroDetailUiModelVersionTrapTest {
                 Tier.S, 52.0, 8.5, "描述",
                 List.of(), List.of(), List.of(),
                 7.0, 5.5, 9.0,
-                "推荐出装", "/images/yasuo.png"
+                "推荐出装", List.of(), List.of(), "/images/yasuo.png", false
         );
 
         assertFalse(model.isVersionTrap());
@@ -51,7 +51,7 @@ class HeroDetailUiModelVersionTrapTest {
                 Tier.S, 52.0, 8.5, "描述",
                 List.of(), List.of(), List.of(),
                 7.0, 5.5, 9.0,
-                "推荐出装", "/images/yasuo.png", true
+                "推荐出装", List.of(), List.of(), "/images/yasuo.png", true
         );
 
         assertTrue(model.isVersionTrap());
@@ -63,7 +63,7 @@ class HeroDetailUiModelVersionTrapTest {
                 Tier.S, 52.0, 8.5, "描述",
                 List.of(), List.of(), List.of(),
                 7.0, 5.5, 9.0,
-                "推荐出装", "/images/yasuo.png", versionTrap
+                "推荐出装", List.of(), List.of(), "/images/yasuo.png", versionTrap
         );
     }
 }

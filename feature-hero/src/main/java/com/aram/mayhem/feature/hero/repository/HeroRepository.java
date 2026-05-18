@@ -300,6 +300,16 @@ public class HeroRepository {
         entity.avgAssists = detail.getAvgAssists() != null ? detail.getAvgAssists().doubleValue() : 0.0;
         entity.recommendedBuild = detail.getRecommendedBuild();
         entity.recommendedAugmentIds = detail.getRecommendedAugmentIds();
+        if (detail.getRecommendedAugments() != null) {
+            entity.recommendedAugments = detail.getRecommendedAugments().stream().map(augment -> {
+                HeroEntity.AugmentBriefData data = new HeroEntity.AugmentBriefData();
+                data.id = augment.getId();
+                data.nameZh = augment.getNameZh();
+                data.quality = augment.getQuality();
+                data.iconUrl = augment.getIconUrl();
+                return data;
+            }).collect(Collectors.toList());
+        }
         entity.counterTips = detail.getCounterTips();
         entity.synergies = detail.getSynergies();
         entity.isTrap = false;
@@ -353,12 +363,22 @@ public class HeroRepository {
      * @return HeroDetailUiModel UI层使用的英雄详情展示模型
      */
     private HeroDetailUiModel convertEntityToDetailUiModel(HeroEntity entity) {
-        // 技能列表转换：Entity SkillData → UI SkillUiModel
         List<HeroDetailUiModel.SkillUiModel> skills = null;
         if (entity.skills != null) {
             skills = entity.skills.stream().map(skill ->
                     new HeroDetailUiModel.SkillUiModel(skill.key, skill.name, skill.description)
             ).collect(Collectors.toList());
+        }
+
+        List<HeroDetailUiModel.AugmentBriefUiModel> augments = null;
+        if (entity.recommendedAugments != null && !entity.recommendedAugments.isEmpty()) {
+            augments = entity.recommendedAugments.stream()
+                    .map(a -> new HeroDetailUiModel.AugmentBriefUiModel(a.id, a.nameZh, a.quality, a.iconUrl))
+                    .collect(Collectors.toList());
+        } else if (entity.recommendedAugmentIds != null && !entity.recommendedAugmentIds.isEmpty()) {
+            augments = entity.recommendedAugmentIds.stream()
+                    .map(id -> new HeroDetailUiModel.AugmentBriefUiModel(id, "符文 #" + id, null, null))
+                    .collect(Collectors.toList());
         }
 
         return new HeroDetailUiModel(
@@ -379,8 +399,9 @@ public class HeroRepository {
                 entity.avgAssists,
                 entity.recommendedBuild,
                 entity.recommendedAugmentIds,
+                augments,
                 entity.avatarUrl,
-                false
+                entity.isVersionTrap
         );
     }
 
@@ -394,11 +415,21 @@ public class HeroRepository {
      * @return HeroDetailUiModel UI层使用的英雄详情展示模型
      */
     private HeroDetailUiModel convertToDetailUiModel(HeroDetailResponse detail) {
-        // 技能列表转换：DTO → UI SkillUiModel
         List<HeroDetailUiModel.SkillUiModel> skills = null;
         if (detail.getSkills() != null) {
             skills = detail.getSkills().stream()
                     .map(skill -> new HeroDetailUiModel.SkillUiModel(skill.getKey(), skill.getName(), skill.getDescription()))
+                    .collect(Collectors.toList());
+        }
+
+        List<HeroDetailUiModel.AugmentBriefUiModel> augments = null;
+        if (detail.getRecommendedAugments() != null && !detail.getRecommendedAugments().isEmpty()) {
+            augments = detail.getRecommendedAugments().stream()
+                    .map(a -> new HeroDetailUiModel.AugmentBriefUiModel(a.getId(), a.getNameZh(), a.getQuality(), a.getIconUrl()))
+                    .collect(Collectors.toList());
+        } else if (detail.getRecommendedAugmentIds() != null && !detail.getRecommendedAugmentIds().isEmpty()) {
+            augments = detail.getRecommendedAugmentIds().stream()
+                    .map(id -> new HeroDetailUiModel.AugmentBriefUiModel(id, "符文 #" + id, null, null))
                     .collect(Collectors.toList());
         }
 
@@ -420,6 +451,7 @@ public class HeroRepository {
                 detail.getAvgAssists() != null ? detail.getAvgAssists().doubleValue() : 0.0,
                 detail.getRecommendedBuild(),
                 detail.getRecommendedAugmentIds(),
+                augments,
                 detail.getImageUrl(),
                 detail.getIsVersionTrap() != null && detail.getIsVersionTrap()
         );

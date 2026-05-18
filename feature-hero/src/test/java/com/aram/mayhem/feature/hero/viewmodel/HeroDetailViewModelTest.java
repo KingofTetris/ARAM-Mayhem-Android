@@ -178,7 +178,14 @@ class HeroDetailViewModelTest {
                 4.2,
                 7.1,
                 "海妖杀手 → 无尽之刃 → 幻影之舞",
-                "/images/heroes/Ashe.png"
+                List.of(1L, 2L, 3L),
+                List.of(
+                        new HeroDetailUiModel.AugmentBriefUiModel(1L, "风暴聚集", "金色", null),
+                        new HeroDetailUiModel.AugmentBriefUiModel(2L, "终极猎人", "棱彩", null),
+                        new HeroDetailUiModel.AugmentBriefUiModel(3L, "饼干配送", "银色", null)
+                ),
+                "/images/heroes/Ashe.png",
+                false
         );
     }
 }

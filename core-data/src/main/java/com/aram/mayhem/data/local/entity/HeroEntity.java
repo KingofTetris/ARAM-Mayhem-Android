@@ -63,6 +63,8 @@ public class HeroEntity {
 
     public List<Long> recommendedAugmentIds;
 
+    public List<AugmentBriefData> recommendedAugments;
+
     public boolean isTrap;
 
     public boolean isVersionTrap;
@@ -73,5 +75,12 @@ public class HeroEntity {
         public String key;
         public String name;
         public String description;
+    }
+
+    public static class AugmentBriefData {
+        public long id;
+        public String nameZh;
+        public String quality;
+        public String iconUrl;
     }
 }

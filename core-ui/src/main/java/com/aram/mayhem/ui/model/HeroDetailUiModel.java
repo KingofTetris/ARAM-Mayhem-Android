@@ -28,6 +28,7 @@ public class HeroDetailUiModel {
     private final double avgAssists;
     private final String recommendedBuild;
     private final List<Long> recommendedAugmentIds;
+    private final List<AugmentBriefUiModel> recommendedAugments;
     private final String imageUrl;
     private final boolean versionTrap;
 
@@ -36,6 +37,7 @@ public class HeroDetailUiModel {
                              List<SkillUiModel> skills, List<String> counterTips, List<String> synergies,
                              double avgKills, double avgDeaths, double avgAssists,
                              String recommendedBuild, List<Long> recommendedAugmentIds,
+                             List<AugmentBriefUiModel> recommendedAugments,
                              String imageUrl, boolean versionTrap) {
         this.id = id;
         this.nameZh = nameZh;
@@ -54,6 +56,7 @@ public class HeroDetailUiModel {
         this.avgAssists = avgAssists;
         this.recommendedBuild = recommendedBuild;
         this.recommendedAugmentIds = recommendedAugmentIds;
+        this.recommendedAugments = recommendedAugments;
         this.imageUrl = imageUrl;
         this.versionTrap = versionTrap;
     }
@@ -75,6 +78,7 @@ public class HeroDetailUiModel {
     public double getAvgAssists() { return avgAssists; }
     public String getRecommendedBuild() { return recommendedBuild; }
     public List<Long> getRecommendedAugmentIds() { return recommendedAugmentIds; }
+    public List<AugmentBriefUiModel> getRecommendedAugments() { return recommendedAugments; }
     public String getImageUrl() { return imageUrl; }
     public boolean isVersionTrap() { return versionTrap; }
 
@@ -104,5 +108,24 @@ public class HeroDetailUiModel {
         public String getKey() { return key; }
         public String getName() { return name; }
         public String getDescription() { return description; }
+    }
+
+    public static class AugmentBriefUiModel {
+        private final long id;
+        private final String nameZh;
+        private final String quality;
+        private final String iconUrl;
+
+        public AugmentBriefUiModel(long id, String nameZh, String quality, String iconUrl) {
+            this.id = id;
+            this.nameZh = nameZh;
+            this.quality = quality;
+            this.iconUrl = iconUrl;
+        }
+
+        public long getId() { return id; }
+        public String getNameZh() { return nameZh; }
+        public String getQuality() { return quality; }
+        public String getIconUrl() { return iconUrl; }
     }
 }

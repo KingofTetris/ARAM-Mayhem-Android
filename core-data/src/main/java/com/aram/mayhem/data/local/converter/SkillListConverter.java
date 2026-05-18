@@ -56,4 +56,17 @@ public class SkillListConverter {
         Type type = new TypeToken<List<Long>>() {}.getType();
         return gson.fromJson(data, type);
     }
+
+    @androidx.room.TypeConverter
+    public String fromAugmentBriefList(List<HeroEntity.AugmentBriefData> augments) {
+        if (augments == null) return null;
+        return gson.toJson(augments);
+    }
+
+    @androidx.room.TypeConverter
+    public List<HeroEntity.AugmentBriefData> toAugmentBriefList(String data) {
+        if (data == null) return Collections.emptyList();
+        Type type = new TypeToken<List<HeroEntity.AugmentBriefData>>() {}.getType();
+        return gson.fromJson(data, type);
+    }
 }

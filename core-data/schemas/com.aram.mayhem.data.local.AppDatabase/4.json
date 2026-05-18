@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "2818777f0f826f85c4fab981b85eba38",
+    "identityHash": "4c49b9e1e8c264e29c92c4b1a73c4957",
     "entities": [
       {
         "tableName": "heroes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `title` TEXT, `role` TEXT, `tier` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avatarUrl` TEXT, `description` TEXT, `skills` TEXT, `counterTips` TEXT, `synergies` TEXT, `avgKills` REAL NOT NULL, `avgDeaths` REAL NOT NULL, `avgAssists` REAL NOT NULL, `recommendedBuild` TEXT, `recommendedAugmentIds` TEXT, `isTrap` INTEGER NOT NULL, `isVersionTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `title` TEXT, `role` TEXT, `tier` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avatarUrl` TEXT, `description` TEXT, `skills` TEXT, `counterTips` TEXT, `synergies` TEXT, `avgKills` REAL NOT NULL, `avgDeaths` REAL NOT NULL, `avgAssists` REAL NOT NULL, `recommendedBuild` TEXT, `recommendedAugmentIds` TEXT, `recommendedAugments` TEXT, `isTrap` INTEGER NOT NULL, `isVersionTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -113,6 +113,12 @@
           {
             "fieldPath": "recommendedAugmentIds",
             "columnName": "recommendedAugmentIds",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recommendedAugments",
+            "columnName": "recommendedAugments",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -299,7 +305,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2818777f0f826f85c4fab981b85eba38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4c49b9e1e8c264e29c92c4b1a73c4957')"
     ]
   }
 }

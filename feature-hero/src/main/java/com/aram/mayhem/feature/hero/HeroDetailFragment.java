@@ -21,7 +21,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.util.List;
+
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * 英雄详情页
@@ -207,24 +210,74 @@ public class HeroDetailFragment extends Fragment {
     /**
      * 更新推荐强化符文展示
      *
-     * 作用：将英雄详情中的 recommendedAugmentIds 以 Chip 形式展示
-     * 实现：遍历 ID 列表，创建 Chip 添加到 ChipGroup
+     * 作用：将英雄详情中的推荐符文以品质色 Chip 形式展示
+     * 实现：优先使用 recommendedAugments（含名称+品质），降级使用 recommendedAugmentIds（仅ID）
+     * 品质色：棱彩=紫金渐变、金=金黄、银=银灰
      *
      * @param hero 英雄详情 UI 模型
      */
     private void updateRecommendedAugments(HeroDetailUiModel hero) {
-        if (hero.getRecommendedAugmentIds() != null && !hero.getRecommendedAugmentIds().isEmpty()) {
+        List<HeroDetailUiModel.AugmentBriefUiModel> augments = hero.getRecommendedAugments();
+        List<Long> augmentIds = hero.getRecommendedAugmentIds();
+        boolean hasAugments = (augments != null && !augments.isEmpty()) || (augmentIds != null && !augmentIds.isEmpty());
+
+        if (hasAugments) {
             binding.cardAugments.setVisibility(View.VISIBLE);
             binding.chipGroupAugments.removeAllViews();
-            for (Long augmentId : hero.getRecommendedAugmentIds()) {
-                Chip chip = new Chip(requireContext());
-                chip.setText("符文 #" + augmentId);
-                chip.setClickable(false);
-                chip.setCheckable(false);
-                binding.chipGroupAugments.addView(chip);
+
+            if (augments != null && !augments.isEmpty()) {
+                Timber.i("AugmentDisplay: load_by_name | heroId=%d | count=%d | source=recommendedAugments | timestamp=%d",
+                        hero.getId(), augments.size(), System.currentTimeMillis());
+                for (HeroDetailUiModel.AugmentBriefUiModel augment : augments) {
+                    Chip chip = new Chip(requireContext());
+                    chip.setText(augment.getNameZh());
+                    chip.setClickable(false);
+                    chip.setCheckable(false);
+                    applyQualityChipStyle(chip, augment.getQuality());
+                    binding.chipGroupAugments.addView(chip);
+                }
+            } else {
+                Timber.w("AugmentDisplay: load_by_id_fallback | heroId=%d | count=%d | source=recommendedAugmentIds | timestamp=%d",
+                        hero.getId(), augmentIds.size(), System.currentTimeMillis());
+                for (Long augmentId : augmentIds) {
+                    Chip chip = new Chip(requireContext());
+                    chip.setText("符文 #" + augmentId);
+                    chip.setClickable(false);
+                    chip.setCheckable(false);
+                    binding.chipGroupAugments.addView(chip);
+                }
             }
         } else {
+            Timber.d("AugmentDisplay: no_augments | heroId=%d | timestamp=%d", hero.getId(), System.currentTimeMillis());
             binding.cardAugments.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 根据符文品质设置 Chip 样式
+     *
+     * 品质色规则：棱彩=紫金渐变、金=金黄色、银=银灰色
+     *
+     * @param chip    要设置样式的 Chip
+     * @param quality 符文品质（棱彩/金色/银色）
+     */
+    private void applyQualityChipStyle(Chip chip, String quality) {
+        if (quality == null) return;
+        switch (quality) {
+            case "棱彩":
+                chip.setChipBackgroundColorResource(com.aram.mayhem.ui.R.color.quality_prismatic);
+                chip.setTextColor(android.graphics.Color.WHITE);
+                break;
+            case "金色":
+                chip.setChipBackgroundColorResource(com.aram.mayhem.ui.R.color.quality_gold);
+                chip.setTextColor(android.graphics.Color.WHITE);
+                break;
+            case "银色":
+                chip.setChipBackgroundColorResource(com.aram.mayhem.ui.R.color.quality_silver);
+                chip.setTextColor(android.graphics.Color.BLACK);
+                break;
+            default:
+                break;
         }
     }
 

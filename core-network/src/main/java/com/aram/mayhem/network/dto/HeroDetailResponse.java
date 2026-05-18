@@ -60,6 +60,9 @@ public class HeroDetailResponse {
     @SerializedName("recommendedAugmentIds")
     private List<Long> recommendedAugmentIds;
 
+    @SerializedName("recommendedAugments")
+    private List<AugmentBriefResponse> recommendedAugments;
+
     @SerializedName("isVersionTrap")
     private Boolean isVersionTrap;
 
@@ -81,6 +84,7 @@ public class HeroDetailResponse {
     public Double getAvgAssists() { return avgAssists; }
     public String getRecommendedBuild() { return recommendedBuild; }
     public List<Long> getRecommendedAugmentIds() { return recommendedAugmentIds; }
+    public List<AugmentBriefResponse> getRecommendedAugments() { return recommendedAugments; }
     public Boolean getIsVersionTrap() { return isVersionTrap; }
 
     public static class SkillResponse {
@@ -96,5 +100,24 @@ public class HeroDetailResponse {
         public String getKey() { return key; }
         public String getName() { return name; }
         public String getDescription() { return description; }
+    }
+
+    public static class AugmentBriefResponse {
+        @SerializedName("id")
+        private Long id;
+
+        @SerializedName("nameZh")
+        private String nameZh;
+
+        @SerializedName("quality")
+        private String quality;
+
+        @SerializedName("iconUrl")
+        private String iconUrl;
+
+        public Long getId() { return id; }
+        public String getNameZh() { return nameZh; }
+        public String getQuality() { return quality; }
+        public String getIconUrl() { return iconUrl; }
     }
 }
