@@ -15,13 +15,13 @@ import com.aram.mayhem.data.local.entity.AugmentEntity;
  * Room 本地数据库
  *
  * 表：heroes, augments
- * 版本：4（fallbackToDestructiveMigration）
+ * 版本：5（使用正式 Migration 策略，禁止 fallbackToDestructiveMigration）
  * 单例模式：双重检查锁
- * 关联：HeroDao, AugmentDao, HeroEntity, AugmentEntity
+ * 关联：HeroDao, AugmentDao, HeroEntity, AugmentEntity, AppDatabaseMigrations
  */
 @Database(
         entities = {HeroEntity.class, AugmentEntity.class},
-        version = 4,
+        version = 5,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -41,7 +41,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "aram_mayhem_db"
                     )
-                            .fallbackToDestructiveMigration()
+                            .addMigrations(AppDatabaseMigrations.getAll())
                             .build();
                 }
             }

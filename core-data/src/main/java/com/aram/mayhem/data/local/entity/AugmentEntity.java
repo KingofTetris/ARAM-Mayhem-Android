@@ -27,6 +27,8 @@ public class AugmentEntity {
 
     public String description;
 
+    public String descriptionDetail;
+
     public String quality;
 
     public String synergySet;
