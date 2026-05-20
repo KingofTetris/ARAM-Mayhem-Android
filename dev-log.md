@@ -1,7 +1,7 @@
 # ARAM Mayhem Assistant 开发操作步骤记录
 
 > 本文档记录项目从初始化到当前阶段的所有关键操作步骤、决策过程、问题及解决方案。
-> 最后更新：2026-05-03
+> 最后更新：2026-05-20
 
 ---
 
@@ -265,9 +265,82 @@
 
 ## 待办事项（按优先级）
 
-1. **[高] M3 安卓端**：8 个通用 UI 组件开发（TierBadgeView, HeroCardAdapter, AugmentCardAdapter 等）
-2. **[高] M3 安卓端**：AuthInterceptor + TokenRefreshInterceptor 实现
-3. **[高] M3 安卓端**：Retrofit API 接口定义 + Room Database 实现
-4. **[高] M4 后端**：DataInitializer 种子数据 + HeroController + HeroService
-5. **[中] M4 后端**：HeroService Redis 缓存策略
-6. **[低] M1 遗留**：Checkstyle + SpotBugs 代码规范配置
+1. **[高] M4 后端**：DataInitializer 种子数据 + HeroController + HeroService
+2. **[中] M4 后端**：HeroService Redis 缓存策略
+3. **[高] 网络恢复后**：推送 3 个本地 commit 到 GitHub 远程仓库
+
+---
+
+## 阶段四：技术债务清理与质量提升（2026-05-20）
+
+### 4.1 ProfileViewModel 单元测试（T4-1）
+
+**开始时间**：2026-05-20
+
+**实施内容**：
+
+1. 新增 `ProfileViewModelTest.java`：29 个单元测试覆盖全部公开方法
+2. 测试分组：isLoggedIn(2) / loadUserProfile(4) / updateProfile(3) / logout(1) / login(7) / register(5) / 初始状态(7)
+3. 登录测试覆盖：成功保存Token / 密码错误 / 响应体为空 / AuthResponse为空 / 网络错误 / loading状态 / 参数传递
+4. 注册测试覆盖：成功触发 / 邮箱已存在 / 网络错误 / 参数传递 / loading状态
+5. 修改 `feature-profile/build.gradle`：添加 JUnit5 / Mockito / core-testing 测试依赖
+6. 修改 `feature-profile/build.gradle`：添加 `useJUnitPlatform()` 和 `returnDefaultValues = true`
+
+**关键决策**：
+- **决策54**：使用 `ArchTaskExecutor.setDelegate()` 替代 JUnit 4 的 `InstantTaskExecutorRule`，理由：JUnit 5 不支持 `@Rule` 注解，`InstantTaskExecutorRule` 无法生效；手动设置 TaskExecutor delegate 可在 JUnit 5 下实现同步 LiveData 执行
+- **决策55**：core-testing 使用独立版本号 `2.2.0` 而非 `$lifecycleVersion`，理由：`core-testing` 和 `lifecycle` 是不同的版本线，`lifecycleVersion=2.7.0` 对应的 `core-testing` 不存在
+
+**遇到的问题及解决**：
+| 问题 | 解决方案 |
+|------|----------|
+| `Method getMainLooper in android.os.Looper not mocked` | 添加 `unitTests.returnDefaultValues = true` + `ArchTaskExecutor.setDelegate()` |
+| `InstantTaskExecutorRule` 在 JUnit 5 下不生效 | 改用 `ArchTaskExecutor.getInstance().setDelegate()` 手动设置 |
+| `androidx.arch.core:core-testing:2.7.0` 不存在 | core-testing 使用独立版本号 2.2.0 |
+| Mockito 严格模式报 unused stubbing | 添加 `@MockitoSettings(strictness = Strictness.LENIENT)` |
+
+**编译验证**：`gradlew :feature-profile:testDebugUnitTest` → **29 tests passed, BUILD SUCCESSFUL**
+
+---
+
+### 4.2 Checkstyle/SpotBugs 配置修复与代码违规修复（T5-1/T5-2）
+
+**开始时间**：2026-05-20
+
+**实施内容**：
+
+1. 修复 `checkstyle.xml`：`LineLength` 从 `TreeWalker` 移至 `Checker` 模块（兼容 Checkstyle 10.x）
+2. 修复 `checkstyle.xml`：移除 `LITERAL_INSTANCEOF` token（`WhitespaceAroundCheck` 10.x 不再支持）
+3. 修复 `MainActivity.java`：移除未使用的 `NonNull` 导入（UnusedImports 违规）
+4. 修复 `MainActivity.java`：添加 `navHostFragment` 空检查（SpotBugs NP 违规）
+5. 修复 `MayhemApplication.java`：空 if 块添加注释（EmptyBlock 违规）
+6. 更新 `spotbugs/exclude.xml`：排除 DataBinding 生成代码的 BC 违规
+
+**关键决策**：
+- **决策56**：Checkstyle 10.x 中 `LineLength` 必须放在 `Checker` 而非 `TreeWalker` 下，理由：Checkstyle 10.x 重构了模块层级，`LineLength` 属于文件级检查而非 AST 级检查
+- **决策57**：DataBinding 生成代码的 SpotBugs 违规应排除而非修复，理由：生成代码不可控，修复后重新生成会丢失
+
+**编译验证**：`gradlew :app:checkstyleMain` → **0 violations**；`gradlew :app:spotbugsDebug` → **0 bugs**
+
+---
+
+### 4.3 Room Migration v4→v5（T6-1）
+
+**开始时间**：2026-05-20
+
+**实施内容**：
+
+1. 新增 `AppDatabaseMigrations.java`：包含 MIGRATION_1_2 / 2_3 / 3_4 / 4_5 四个正式迁移类
+2. MIGRATION_1_2：heroes 新增 title / description / skills / counterTips / synergies / avgKDA / recommendedBuild
+3. MIGRATION_2_3：heroes 新增 isVersionTrap
+4. MIGRATION_3_4：heroes 新增 recommendedAugmentIds / recommendedAugments
+5. MIGRATION_4_5：heroes 新增 banRate；augments 新增 descriptionDetail
+6. 修改 `AppDatabase.java`：版本 4→5，`fallbackToDestructiveMigration()` 替换为 `addMigrations()`
+7. 修改 `HeroEntity.java`：新增 banRate 字段（英雄禁用率）
+8. 修改 `AugmentEntity.java`：新增 descriptionDetail 字段（符文详细描述）
+9. 新增 v5 schema 文件
+
+**关键决策**：
+- **决策58**：使用正式 Migration 策略替代 `fallbackToDestructiveMigration()`，理由：规则 BC-006 要求正式发布前必须实现正确的 Migration 策略；破坏性迁移会导致用户本地缓存数据全部丢失
+- **决策59**：v4→v5 新增 banRate 和 descriptionDetail 字段，理由：banRate 是 ARAM 模式重要数据（禁用率影响英雄选择）；descriptionDetail 提供符文的详细机制说明，与 heroes 表的 description 字段对称
+
+**编译验证**：`gradlew :app:compileDebugJavaWithJavac` → **BUILD SUCCESSFUL**；`gradlew :feature-profile:testDebugUnitTest` → **29 tests passed**
