@@ -19,6 +19,13 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -42,4 +49,9 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
 }
