@@ -7,6 +7,9 @@
         <Source name="~.*Hilt_.*\.java"/>
     </Match>
     <Match>
+        <Source name="~.*databinding.*\.java"/>
+    </Match>
+    <Match>
         <Package name="~com\.aram\.mayhem\.dagger.*"/>
     </Match>
     <Match>

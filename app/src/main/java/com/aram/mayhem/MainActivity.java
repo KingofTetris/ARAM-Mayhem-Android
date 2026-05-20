@@ -2,7 +2,6 @@ package com.aram.mayhem;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -39,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements OnHeroSelectedLis
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment == null) {
+            return;
+        }
         NavController navController = navHostFragment.getNavController();
 
         BottomNavigationView bottomNav = binding.bottomNavigation;

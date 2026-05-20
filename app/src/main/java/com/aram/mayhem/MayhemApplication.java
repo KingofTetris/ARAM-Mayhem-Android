@@ -37,6 +37,7 @@ public class MayhemApplication extends Application {
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
             if (priority >= android.util.Log.WARN) {
+                // Release builds only log WARN and above
             }
         }
     }
