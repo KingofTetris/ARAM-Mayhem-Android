@@ -33,7 +33,7 @@
                 android:layout_height="@dimen/avatar_size_large"
                 android:contentDescription="@string/profile_avatar"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher_round"
+                android:src="@drawable/ic_person"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

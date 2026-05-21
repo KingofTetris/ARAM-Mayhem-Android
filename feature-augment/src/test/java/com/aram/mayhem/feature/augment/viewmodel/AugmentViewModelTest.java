@@ -2,6 +2,8 @@ package com.aram.mayhem.feature.augment.viewmodel;
 
 import android.app.Application;
 
+import androidx.arch.core.executor.ArchTaskExecutor;
+import androidx.arch.core.executor.TaskExecutor;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.aram.mayhem.feature.augment.repository.AugmentRepository;
 import com.aram.mayhem.ui.model.AugmentUiModel;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +33,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AugmentViewModelTest {
+
+    @Mock
+    private Application mockApplication;
 
     @Mock
     private AugmentRepository mockAugmentRepository;
@@ -153,9 +159,31 @@ class AugmentViewModelTest {
 
     @BeforeEach
     void setUp() {
-        viewModel = new TestAugmentViewModel(null);
+        ArchTaskExecutor.getInstance().setDelegate(new TaskExecutor() {
+            @Override
+            public void executeOnDiskIO(Runnable runnable) {
+                runnable.run();
+            }
+
+            @Override
+            public void postToMainThread(Runnable runnable) {
+                runnable.run();
+            }
+
+            @Override
+            public boolean isMainThread() {
+                return true;
+            }
+        });
+
+        viewModel = new TestAugmentViewModel(mockApplication);
         viewModel.setRepository(mockAugmentRepository);
         latch = new CountDownLatch(1);
+    }
+
+    @AfterEach
+    void tearDown() {
+        ArchTaskExecutor.getInstance().setDelegate(null);
     }
 
     private List<AugmentUiModel> createAugmentModels(int count) {

@@ -14,7 +14,7 @@ public final class Constants {
     // ====================== 网络请求基础配置 ======================
 
     /** 网络请求基础根地址（后端服务地址） */
-    public static final String BASE_URL = "http://192.168.1.100:8080/";
+    public static final String BASE_URL = "http://192.168.101.2:8080/";
 
     // ====================== 认证相关接口地址 ======================
 

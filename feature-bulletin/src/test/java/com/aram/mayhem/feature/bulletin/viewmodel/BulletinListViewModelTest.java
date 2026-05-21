@@ -6,6 +6,10 @@ import com.aram.mayhem.network.dto.BulletinResponse;
 import com.aram.mayhem.network.dto.PageResponse;
 import com.aram.mayhem.ui.model.BulletinUiModel;
 
+import androidx.arch.core.executor.ArchTaskExecutor;
+import androidx.arch.core.executor.TaskExecutor;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class BulletinListViewModelTest {
 
     @Mock
@@ -42,7 +49,28 @@ class BulletinListViewModelTest {
 
     @BeforeEach
     void setUp() {
+        ArchTaskExecutor.getInstance().setDelegate(new TaskExecutor() {
+            @Override
+            public void executeOnDiskIO(Runnable runnable) {
+                runnable.run();
+            }
+
+            @Override
+            public void postToMainThread(Runnable runnable) {
+                runnable.run();
+            }
+
+            @Override
+            public boolean isMainThread() {
+                return true;
+            }
+        });
         viewModel = new BulletinListViewModel(mockBulletinApi);
+    }
+
+    @AfterEach
+    void tearDown() {
+        ArchTaskExecutor.getInstance().setDelegate(null);
     }
 
     @Test
@@ -98,7 +126,7 @@ class BulletinListViewModelTest {
     @Test
     @DisplayName("loadBulletins 加载中不重复请求")
     void loadBulletins_whileLoading_doesNotDuplicateRequest() {
-        when(mockBulletinApi.getBulletins(anyString(), anyInt(), anyInt())).thenReturn(mockBulletinsCall);
+        when(mockBulletinApi.getBulletins(any(), anyInt(), anyInt())).thenReturn(mockBulletinsCall);
 
         viewModel.loadBulletins(null, true);
         viewModel.loadBulletins(null, true);

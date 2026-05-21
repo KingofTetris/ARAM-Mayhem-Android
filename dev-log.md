@@ -268,6 +268,8 @@
 1. **[高] M4 后端**：DataInitializer 种子数据 + HeroController + HeroService
 2. **[中] M4 后端**：HeroService Redis 缓存策略
 3. **[高] 网络恢复后**：推送 3 个本地 commit 到 GitHub 远程仓库
+4. **[中] 真机验证**：使用 deploy-device.bat 安装 Release APK 到真机，执行验证清单
+5. **[中] 后端数据管线**：端到端验证 RiotDataDragon + AramDataCollector 数据抓取流程
 
 ---
 
@@ -344,3 +346,96 @@
 - **决策59**：v4→v5 新增 banRate 和 descriptionDetail 字段，理由：banRate 是 ARAM 模式重要数据（禁用率影响英雄选择）；descriptionDetail 提供符文的详细机制说明，与 heroes 表的 description 字段对称
 
 **编译验证**：`gradlew :app:compileDebugJavaWithJavac` → **BUILD SUCCESSFUL**；`gradlew :feature-profile:testDebugUnitTest` → **29 tests passed**
+
+---
+
+### 4.4 ViewModel 单元测试全覆盖（T7）
+
+**开始时间**：2026-05-20
+
+**实施内容**：
+
+1. **feature-bulletin**：修复 `BulletinListViewModelTest`（ArchTaskExecutor + mockApplication），新增 `BulletinDetailViewModelTest`（10 个测试用例）
+2. **feature-community**：新增 `StrategyFeedViewModelTest`（11 个测试用例：分页加载、排序、刷新、重复请求防护）
+3. **feature-community**：新增 `StrategyDetailViewModelTest`（9 个测试用例：详情加载、投票、错误处理）
+4. **feature-community**：新增 `PublishStrategyViewModelTest`（15 个测试用例：表单验证、发布逻辑、符文/装备选择、重置）
+5. **feature-profile**：新增 `MyStrategiesViewModelTest`（10 个测试用例：列表加载、删除、错误处理、重复请求防护）
+6. **feature-augment**：新增 `SynergyProgressViewModelTest`（10 个测试用例：套装进度加载、符文增删、防御性拷贝）
+7. **feature-augment**：新增 `AugmentRecommendViewModelTest`（10 个测试用例：英雄选择、符文增删、推荐数据刷新）
+8. **feature-augment**：修复已有 `AugmentViewModelTest`（ArchTaskExecutor + mockApplication 替换 null Application）
+9. **feature-augment build.gradle**：添加 `testOptions { unitTests.returnDefaultValues = true; useJUnitPlatform() }` 和 `core-testing:2.2.0` 依赖
+10. **core-network DTO**：为 `StrategyListResponse` 和 `StrategyDetailResponse` 补充 setter 方法以支持测试数据构造
+
+**测试统计**：
+
+| 模块 | 测试类 | 测试用例数 | 状态 |
+|------|--------|-----------|------|
+| feature-bulletin | BulletinListViewModelTest | 8 | ✅ 修复通过 |
+| feature-bulletin | BulletinDetailViewModelTest | 10 | ✅ 新增通过 |
+| feature-community | StrategyFeedViewModelTest | 11 | ✅ 新增通过 |
+| feature-community | StrategyDetailViewModelTest | 9 | ✅ 新增通过 |
+| feature-community | PublishStrategyViewModelTest | 15 | ✅ 新增通过 |
+| feature-profile | MyStrategiesViewModelTest | 10 | ✅ 新增通过 |
+| feature-profile | ProfileViewModelTest | 29 | ✅ 已有通过 |
+| feature-augment | AugmentViewModelTest | 11 | ✅ 修复通过 |
+| feature-augment | SynergyProgressViewModelTest | 10 | ✅ 新增通过 |
+| feature-augment | AugmentRecommendViewModelTest | 10 | ✅ 新增通过 |
+| **合计** | **10 个测试类** | **123 个测试用例** | **全部通过** |
+
+**关键决策**：
+- **决策60**：ViewModel 测试统一使用 JUnit 5 + Mockito + ArchTaskExecutor 模式，理由：`instant-executor` 规则不适用于 JUnit 5，手动设置 ArchTaskExecutor delegate 可确保 LiveData.setValue() 在测试线程同步执行
+- **决策61**：AndroidViewModel 测试使用 mock Application 而非真实实例，理由：单元测试不应依赖 Android Framework，`returnDefaultValues = true` 配合 mock 可避免 NPE
+- **决策62**：Repository 返回 LiveData 的 ViewModel 测试使用 `observeForever` 模式，通过手动触发 MutableLiveData.setValue() 模拟数据回调，理由：避免引入 CountDownLatch 的异步等待复杂度
+
+**遇到的问题及解决**：
+
+| 问题 | 解决方案 |
+|------|----------|
+| LiveData.getValue() 返回 null（主线程检查） | 设置 ArchTaskExecutor delegate 使 postToMainThread 同步执行 |
+| AndroidViewModel(null) 导致 NPE | 使用 @Mock Application 替代 null |
+| Arrays.asList() 返回固定大小列表，addAugment/removeAugment 抛 UnsupportedOperationException | 使用 new ArrayList<>(Arrays.asList(...)) 构造可变列表 |
+| Mockito PotentialStubbingProblem（未使用的 stub） | 添加 @MockitoSettings(strictness = Strictness.LENIENT) |
+| StrategyListResponse/StrategyDetailResponse 缺少 setter | 补充 setter 方法以支持测试数据构造 |
+
+---
+
+### 4.5 数据管线验证与 Release 构建部署（T8）
+
+**开始时间**：2026-05-20
+
+**实施内容**：
+
+1. **后端数据管线验证**：确认 `RiotDataDragonClient`（版本获取+英雄数据抓取）和 `AramDataCollector`（U.GG ARAM 统计数据爬取）编译通过
+2. **Android ProGuard 规则完善**：补充 DTO/Entity/Hilt/Room/Converter/DAO 等保留规则，确保 Release 构建混淆后运行正常
+3. **Android Release 构建修复**：
+   - 修复 core-ui 和 feature 模块缺失的 string 资源（upvote/downvote/hero_icon/empty_strategies）
+   - 修复 feature-profile 的 `ic_launcher_round` 引用错误，改用 `ic_person` drawable
+   - 移除 `navigation_graph.xml` 中的 `tools:layout` 属性，解决 ViewBinding 在 app 模块中生成跨模块绑定类导致 Release 构建找不到 R.layout.fragment_profile 的问题
+4. **Android 签名配置**：
+   - 生成 `aram-mayhem-release.jks` 签名密钥（RSA 2048, 有效期 10000 天）
+   - 配置 `app/build.gradle` 的 `signingConfigs.release`，支持 `gradle.properties` 覆盖密码
+   - Release buildType 绑定 `signingConfig signingConfigs.release`
+5. **后端部署脚本完善**：
+   - 重写 `start-server.bat`：增加 MySQL/Redis 连接预检、启动后健康检查轮询（60s 超时）、持续监控
+   - 新增 `backup-db.bat`：MySQL 数据库备份（mysqldump + gzip 压缩 + 7 天自动清理）
+   - 新增 `health-check.bat`：快速健康检查脚本
+6. **Android 真机部署脚本**：
+   - 新增 `deploy-device.bat`：ADB 连接检测 + APK 安装 + 自动启动 + 验证清单
+
+**关键决策**：
+- **决策63**：移除 `navigation_graph.xml` 中的 `tools:layout` 属性，理由：`tools:layout` 仅用于 Android Studio 设计时预览，不影响运行时行为；但会导致 ViewBinding 在 app 模块中为 feature 模块的布局生成绑定类，Release 构建时 app 的 R 类不包含 feature 模块布局资源，编译报错 `R.layout.fragment_profile not found`
+- **决策64**：签名密码采用 `gradle.properties` 优先 + 硬编码 fallback 策略，理由：CI/CD 环境通过 `RELEASE_STORE_PASSWORD`/`RELEASE_KEY_PASSWORD` 属性注入密钥，本地开发使用默认值
+- **决策65**：后端启动脚本增加 MySQL/Redis 预检和健康检查轮询，理由：避免服务启动后依赖不可用导致运行时错误；健康检查轮询确认服务真正可用后才输出成功信息
+- **决策66**：数据库备份采用 `mysqldump --single-transaction`，理由：InnoDB 引擎下 `--single-transaction` 可实现一致性快照备份而不锁表，不影响线上服务
+
+**遇到的问题及解决**：
+
+| 问题 | 解决方案 |
+|------|----------|
+| Release 构建报 `R.layout.fragment_profile not found` | 移除 navigation_graph.xml 的 tools:layout 属性 + clean 重建 |
+| feature-profile 引用不存在的 `@mipmap/ic_launcher_round` | 改用 `@drawable/ic_person` |
+| core-ui 缺失 upvote/downvote/hero_icon/empty_strategies 字符串 | 补充到 strings.xml |
+| Release APK 为 unsigned | 配置 signingConfigs.release 并绑定到 release buildType |
+| ViewBinding 缓存导致修改后仍报旧错误 | 执行 `gradlew clean` 清除生成文件后重新构建 |
+
+**编译验证**：`gradlew clean assembleRelease` → **BUILD SUCCESSFUL**，生成 `app-release.apk`（已签名）

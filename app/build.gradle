@@ -9,6 +9,18 @@ android {
     namespace 'com.aram.mayhem'
     compileSdk rootProject.ext.compileSdkVersion
 
+    signingConfigs {
+        release {
+            def keystoreFile = file('aram-mayhem-release.jks')
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword project.hasProperty('RELEASE_STORE_PASSWORD') ? RELEASE_STORE_PASSWORD : 'aram123456'
+                keyAlias 'aram-mayhem'
+                keyPassword project.hasProperty('RELEASE_KEY_PASSWORD') ? RELEASE_KEY_PASSWORD : 'aram123456'
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "com.aram.mayhem"
         minSdk rootProject.ext.minSdkVersion
@@ -33,6 +45,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

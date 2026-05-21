@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/navigation_heroes">
 
     <fragment
         android:id="@+id/navigation_heroes"
         android:name="com.aram.mayhem.feature.hero.HeroListFragment"
-        android:label="@string/tab_heroes"
-        tools:layout="@layout/fragment_hero_list">
+        android:label="@string/tab_heroes">
         <action
             android:id="@+id/action_hero_list_to_detail"
             app:destination="@id/navigation_hero_detail" />
@@ -18,8 +16,7 @@
     <fragment
         android:id="@+id/navigation_hero_detail"
         android:name="com.aram.mayhem.feature.hero.HeroDetailFragment"
-        android:label="英雄详情"
-        tools:layout="@layout/fragment_hero_detail">
+        android:label="英雄详情">
         <argument
             android:name="heroId"
             app:argType="long"
@@ -29,14 +26,12 @@
     <fragment
         android:id="@+id/navigation_augments"
         android:name="com.aram.mayhem.feature.augment.AugmentListFragment"
-        android:label="@string/tab_augments"
-        tools:layout="@layout/fragment_augment_list" />
+        android:label="@string/tab_augments" />
 
     <fragment
         android:id="@+id/navigation_community"
         android:name="com.aram.mayhem.feature.community.CommunityFeedFragment"
-        android:label="@string/tab_community"
-        tools:layout="@layout/fragment_community_feed">
+        android:label="@string/tab_community">
         <action
             android:id="@+id/action_community_to_detail"
             app:destination="@id/navigation_strategy_detail" />
@@ -45,8 +40,7 @@
     <fragment
         android:id="@+id/navigation_strategy_detail"
         android:name="com.aram.mayhem.feature.community.StrategyDetailFragment"
-        android:label="@string/strategy_detail"
-        tools:layout="@layout/fragment_strategy_detail">
+        android:label="@string/strategy_detail">
         <argument
             android:name="strategyId"
             app:argType="long"
@@ -56,14 +50,12 @@
     <fragment
         android:id="@+id/navigation_bulletins"
         android:name="com.aram.mayhem.feature.bulletin.BulletinListFragment"
-        android:label="@string/tab_bulletins"
-        tools:layout="@layout/fragment_bulletin_list" />
+        android:label="@string/tab_bulletins" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.aram.mayhem.feature.profile.ProfileFragment"
-        android:label="@string/tab_profile"
-        tools:layout="@layout/fragment_profile">
+        android:label="@string/tab_profile">
         <action
             android:id="@+id/action_navigation_profile_to_myStrategies"
             app:destination="@id/navigation_my_strategies" />
@@ -75,13 +67,11 @@
     <fragment
         android:id="@+id/navigation_my_strategies"
         android:name="com.aram.mayhem.feature.profile.MyStrategiesFragment"
-        android:label="@string/profile_my_strategies"
-        tools:layout="@layout/fragment_my_strategies" />
+        android:label="@string/profile_my_strategies" />
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.aram.mayhem.feature.profile.SettingsFragment"
-        android:label="@string/profile_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:label="@string/profile_settings" />
 
 </navigation>

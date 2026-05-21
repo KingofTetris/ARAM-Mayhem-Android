@@ -40,4 +40,5 @@
     <string name="register_success">注册成功</string>
     <string name="register_failed">注册失败：邮箱可能已被注册</string>
     <string name="register_goto_login">已有账号？去登录</string>
+    <string name="tab_profile">我的</string>
 </resources>

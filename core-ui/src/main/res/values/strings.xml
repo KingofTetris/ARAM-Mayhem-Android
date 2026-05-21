@@ -25,6 +25,8 @@
     <string name="tier_b">B</string>
     <string name="tier_c">C</string>
 
+    <string name="upvote">点赞</string>
+    <string name="downvote">点踩</string>
     <string name="vote_up">赞同</string>
     <string name="vote_down">反对</string>
     <string name="publish_strategy">发布玩法</string>
@@ -52,6 +54,8 @@
 
     <string name="sort_hot">最热</string>
     <string name="sort_latest">最新</string>
+    <string name="hero_icon">英雄图标</string>
+    <string name="empty_strategies">暂无玩法，快来发布第一个吧</string>
     <string name="content_description_hero_avatar">英雄头像</string>
     <string name="content_desc_hero_avatar">英雄头像</string>
     <string name="content_description_augment_icon">强化符文图标</string>

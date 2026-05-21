@@ -119,6 +119,58 @@ public class StrategyDetailResponse {
         return userVoteType;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setAuthorNickname(String authorNickname) {
+        this.authorNickname = authorNickname;
+    }
+
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
+
+    public void setHeroId(Long heroId) {
+        this.heroId = heroId;
+    }
+
+    public void setHeroName(String heroName) {
+        this.heroName = heroName;
+    }
+
+    public void setHeroIcon(String heroIcon) {
+        this.heroIcon = heroIcon;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setAugments(List<AugmentResponse> augments) {
+        this.augments = augments;
+    }
+
+    public void setItems(List<ItemResponse> items) {
+        this.items = items;
+    }
+
+    public void setUserVoteType(String userVoteType) {
+        this.userVoteType = userVoteType;
+    }
+
     public static class AugmentResponse {
         @SerializedName("id")
         private Long id;

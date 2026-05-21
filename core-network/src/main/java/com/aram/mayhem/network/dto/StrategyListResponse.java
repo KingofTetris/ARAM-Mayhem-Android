@@ -110,4 +110,64 @@ public class StrategyListResponse {
     public List<String> getItemIcons() {
         return itemIcons;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setAuthorNickname(String authorNickname) {
+        this.authorNickname = authorNickname;
+    }
+
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
+
+    public void setHeroId(Long heroId) {
+        this.heroId = heroId;
+    }
+
+    public void setHeroName(String heroName) {
+        this.heroName = heroName;
+    }
+
+    public void setHeroIcon(String heroIcon) {
+        this.heroIcon = heroIcon;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUpvotes(Integer upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public void setDownvotes(Integer downvotes) {
+        this.downvotes = downvotes;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setAugmentIcons(List<String> augmentIcons) {
+        this.augmentIcons = augmentIcons;
+    }
+
+    public void setItemIcons(List<String> itemIcons) {
+        this.itemIcons = itemIcons;
+    }
 }
