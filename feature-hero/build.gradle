@@ -9,6 +9,8 @@ android {
 
     defaultConfig {
         minSdk rootProject.ext.minSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -49,9 +51,16 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:$timberVersion"
 
-    // Testing
+    // Unit Testing
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+
+    // UI Testing (Espresso)
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.fragment:fragment-testing:1.8.2"
 }

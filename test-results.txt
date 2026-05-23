@@ -1,0 +1,9 @@
+﻿.\gradlew : ע: D:\androidProjects\ARAM_Mayhem_Assistant\core-network\src\main\java\com\aram\mayhem\network\di\NetworkMo
+dule.javaʹ�û򸲸����ѹ�ʱ�� API��
+所在位置 C:\Users\12040\AppData\Local\Temp\trae\run-command\scripts\ps-script-03ebb6ff-6644-493f-bb22-b1d32fe7f32b.ps1:19 字
+符: 50
++ ... cts\ARAM_Mayhem_Assistant; .\gradlew test --no-daemon -q 2>&1 | Out-F ...
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ע: D:\androidPr...����ѹ�ʱ�� API��:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

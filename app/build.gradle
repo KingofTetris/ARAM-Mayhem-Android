@@ -83,6 +83,9 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:$timberVersion"
 
+    // LeakCanary - 仅在 Debug 模式下检测内存泄漏
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
+
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:1.2.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
@@ -91,7 +94,7 @@ dependencies {
 checkstyle {
     toolVersion = '10.17.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-    ignoreFailures = true
+    ignoreFailures = false
 }
 
 tasks.register('checkstyleMain', Checkstyle) {
@@ -100,7 +103,7 @@ tasks.register('checkstyleMain', Checkstyle) {
 }
 
 spotbugs {
-    ignoreFailures = true
+    ignoreFailures = false
     effort = com.github.spotbugs.snom.Effort.valueOf('DEFAULT')
     reportLevel = com.github.spotbugs.snom.Confidence.valueOf('MEDIUM')
     excludeFilter = file("${rootDir}/config/spotbugs/exclude.xml")

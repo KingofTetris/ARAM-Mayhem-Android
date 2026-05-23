@@ -18,11 +18,53 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 /**
- * 发布攻略 ViewModel（社区模块）
+ * 发布攻略 ViewModel ── 管理攻略发布表单的数据状态和提交逻辑
  *
- * 功能：管理攻略发布表单数据、表单验证、提交发布请求
- * 数据流：用户输入 → ViewModel → StrategyRepository → 服务器
- *        服务器响应 → StrategyRepository → ViewModel → LiveData → UI
+ * ═══════════════════════════════════════════════════════════════════
+ * 一、这个 ViewModel 是干什么的？
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * PublishStrategyViewModel 是攻略发布页的"数据管家"，负责：
+ * 1. 管理表单数据（英雄、标题、描述、符文、装备）
+ * 2. 实时表单验证（标题不为空、描述至少10字）
+ * 3. 提交发布请求到服务器
+ * 4. 管理发布状态（发布中/发布成功/发布失败）
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ * 二、表单验证规则
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ *   ┌──────────────┬──────────────────────┬──────────────────────┐
+ *   │ 字段         │ 验证规则             │ 错误提示             │
+ *   ├──────────────┼──────────────────────┼──────────────────────┤
+ *   │ 英雄ID       │ 不为 null            │ 请选择英雄           │
+ *   │ 标题         │ 不为空（trim后）     │ 请填写标题           │
+ *   │ 描述         │ 至少10个字符（trim后）│ 描述至少10个字       │
+ *   │ 符文列表     │ 可选（无强制要求）   │ -                    │
+ *   │ 装备列表     │ 可选（无强制要求）   │ -                    │
+ *   └──────────────┴──────────────────────┴──────────────────────┘
+ *
+ *   isFormValid = (heroId != null) && (title 不为空) && (description >= 10字)
+ *   发布按钮的 enabled 状态绑定到 isFormValid
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ * 三、数据流
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ *   用户输入                    ViewModel                    Repository
+ *   ┌──────────┐              ┌──────────────┐             ┌──────────┐
+ *   │ 选择英雄  │ ──────────→ │ setSelected  │             │          │
+ *   │ 输入标题  │ ──────────→ │ setTitle     │             │          │
+ *   │ 输入描述  │ ──────────→ │ setDescription│             │          │
+ *   │ 选择符文  │ ──────────→ │ addAugment   │             │          │
+ *   │ 选择装备  │ ──────────→ │ addItem      │             │          │
+ *   │ 点击发布  │ ──────────→ │ publish()    │ ─────────→ │ publish  │
+ *   └──────────┘              └──────────────┘             └──────────┘
+ *                                │
+ *                    ┌───────────┴───────────┐
+ *                    ↓                       ↓
+ *             isFormValid              publishedStrategy
+ *             (按钮可用性)            (发布结果)
  *
  * @see StrategyRepository
  * @see com.aram.mayhem.feature.community.PublishStrategyFragment
@@ -30,124 +72,65 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class PublishStrategyViewModel extends AndroidViewModel {
 
-    /** 攻略数据仓库，提供网络请求能力 */
     private final StrategyRepository strategyRepository;
 
-    /** 选中的英雄ID */
     private final MutableLiveData<Long> selectedHeroId = new MutableLiveData<>();
-    /** 攻略标题 */
     private final MutableLiveData<String> title = new MutableLiveData<>();
-    /** 攻略描述/内容 */
     private final MutableLiveData<String> description = new MutableLiveData<>();
-    /** 选中的强化符文ID列表 */
     private final MutableLiveData<List<Long>> selectedAugmentIds = new MutableLiveData<>(new ArrayList<>());
-    /** 选中的装备ID列表 */
     private final MutableLiveData<List<Long>> selectedItemIds = new MutableLiveData<>(new ArrayList<>());
 
-    /** 是否正在发布中 */
     private final MutableLiveData<Boolean> publishing = new MutableLiveData<>(false);
-    /** 错误信息 */
     private final MutableLiveData<String> error = new MutableLiveData<>();
-    /** 发布成功后的攻略详情数据 */
     private final MutableLiveData<StrategyDetailResponse> publishedStrategy = new MutableLiveData<>();
-    /** 表单是否验证通过 */
     private final MutableLiveData<Boolean> isFormValid = new MutableLiveData<>(false);
 
-    /**
-     * 构造函数
-     *
-     * @param application Android 应用上下文
-     * @param strategyRepository 攻略数据仓库（通过 Hilt 依赖注入）
-     */
     @Inject
     public PublishStrategyViewModel(@NonNull Application application, StrategyRepository strategyRepository) {
         super(application);
         this.strategyRepository = strategyRepository;
     }
 
-    /**
-     * 获取选中英雄ID的可观察数据
-     *
-     * @return LiveData<Long> 选中的英雄ID
-     */
     public LiveData<Long> getSelectedHeroId() {
         return selectedHeroId;
     }
 
-    /**
-     * 获取标题的可观察数据
-     *
-     * @return LiveData<String> 攻略标题
-     */
     public LiveData<String> getTitle() {
         return title;
     }
 
-    /**
-     * 获取描述的可观察数据
-     *
-     * @return LiveData<String> 攻略描述
-     */
     public LiveData<String> getDescription() {
         return description;
     }
 
-    /**
-     * 获取选中符文ID列表的可观察数据
-     *
-     * @return LiveData<List<Long>> 选中的强化符文ID列表
-     */
     public LiveData<List<Long>> getSelectedAugmentIds() {
         return selectedAugmentIds;
     }
 
-    /**
-     * 获取选中装备ID列表的可观察数据
-     *
-     * @return LiveData<List<Long>> 选中的装备ID列表
-     */
     public LiveData<List<Long>> getSelectedItemIds() {
         return selectedItemIds;
     }
 
-    /**
-     * 获取发布状态的可观察数据
-     *
-     * @return LiveData<Boolean> 是否正在发布中
-     */
     public LiveData<Boolean> getPublishing() {
         return publishing;
     }
 
-    /**
-     * 获取错误信息的可观察数据
-     *
-     * @return LiveData<String> 错误信息
-     */
     public LiveData<String> getError() {
         return error;
     }
 
-    /**
-     * 获取发布成功后攻略详情的可观察数据
-     *
-     * @return LiveData<StrategyDetailResponse> 攻略详情数据
-     */
     public LiveData<StrategyDetailResponse> getPublishedStrategy() {
         return publishedStrategy;
     }
 
-    /**
-     * 获取表单验证状态的可观察数据
-     *
-     * @return LiveData<Boolean> 表单是否验证通过
-     */
     public LiveData<Boolean> getIsFormValid() {
         return isFormValid;
     }
 
     /**
-     * 设置选中的英雄ID
+     * 设置选中的英雄ID ── 用户从 AutoCompleteTextView 选择英雄时调用
+     *
+     * 设置后自动触发表单验证。
      *
      * @param heroId 英雄ID
      */
@@ -157,7 +140,9 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 设置攻略标题
+     * 设置攻略标题 ── 用户在 EditText 中输入时调用
+     *
+     * 设置后自动触发表单验证。
      *
      * @param title 攻略标题
      */
@@ -167,7 +152,9 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 设置攻略描述
+     * 设置攻略描述 ── 用户在 EditText 中输入时调用
+     *
+     * 设置后自动触发表单验证。
      *
      * @param description 攻略描述/内容
      */
@@ -176,26 +163,18 @@ public class PublishStrategyViewModel extends AndroidViewModel {
         validateForm();
     }
 
-    /**
-     * 设置选中的符文ID列表
-     *
-     * @param augmentIds 符文ID列表
-     */
     public void setSelectedAugmentIds(List<Long> augmentIds) {
         selectedAugmentIds.setValue(augmentIds);
     }
 
-    /**
-     * 设置选中的装备ID列表
-     *
-     * @param itemIds 装备ID列表
-     */
     public void setSelectedItemIds(List<Long> itemIds) {
         selectedItemIds.setValue(itemIds);
     }
 
     /**
-     * 添加一个符文到选中列表
+     * 添加一个符文到选中列表 ── 用户在多选对话框中勾选时调用
+     *
+     * 避免重复添加：如果列表中已包含该 ID，则跳过。
      *
      * @param augmentId 符文ID
      */
@@ -204,7 +183,6 @@ public class PublishStrategyViewModel extends AndroidViewModel {
         if (current == null) {
             current = new ArrayList<>();
         }
-        // 避免重复添加
         if (!current.contains(augmentId)) {
             current.add(augmentId);
             selectedAugmentIds.setValue(current);
@@ -212,7 +190,7 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 从选中列表移除一个符文
+     * 从选中列表移除一个符文 ── 用户点击 Chip 的关闭图标时调用
      *
      * @param augmentId 符文ID
      */
@@ -225,7 +203,7 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 添加一个装备到选中列表
+     * 添加一个装备到选中列表 ── 用户在多选对话框中勾选时调用
      *
      * @param itemId 装备ID
      */
@@ -234,7 +212,6 @@ public class PublishStrategyViewModel extends AndroidViewModel {
         if (current == null) {
             current = new ArrayList<>();
         }
-        // 避免重复添加
         if (!current.contains(itemId)) {
             current.add(itemId);
             selectedItemIds.setValue(current);
@@ -242,7 +219,7 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 从选中列表移除一个装备
+     * 从选中列表移除一个装备 ── 用户点击 Chip 的关闭图标时调用
      *
      * @param itemId 装备ID
      */
@@ -255,50 +232,59 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 提交发布攻略请求
+     * 提交发布攻略 ── 核心方法，将表单数据提交到服务器
      *
-     * 流程：表单验证 → 设置发布状态 → 调用 Repository 发布 → 更新结果
+     * 执行流程：
+     * 1. 表单验证：英雄、标题、描述必须填写，描述至少10个字符
+     * 2. 设置发布状态 publishing=true
+     * 3. 调用 Repository 发布攻略
+     * 4. 成功 → 设置 publishedStrategy（Fragment 观察到后跳转）
+     * 5. 失败 → 设置 error 提示用户重试
+     *
+     * null 安全处理：
+     * - augmentIds 和 itemIds 可能为 null，默认传空列表
+     * - 标题和描述 trim() 后再提交，去除首尾空格
      */
     public void publish() {
         Long heroId = selectedHeroId.getValue();
         String titleStr = title.getValue();
         String descStr = description.getValue();
 
-        // 表单验证：英雄、标题、描述必须填写，描述至少10个字符
         if (heroId == null || titleStr == null || titleStr.trim().isEmpty() ||
             descStr == null || descStr.trim().length() < 10) {
             error.setValue("请填写完整信息，描述至少10个字");
             return;
         }
 
-        // 设置发布状态
         publishing.setValue(true);
         error.setValue(null);
 
         List<Long> augments = selectedAugmentIds.getValue();
         List<Long> items = selectedItemIds.getValue();
 
-        // 调用 Repository 发布攻略
         strategyRepository.publishStrategy(heroId, titleStr.trim(), descStr.trim(),
                 augments != null ? augments : new ArrayList<>(),
                 items != null ? items : new ArrayList<>())
                 .observeForever(result -> {
-                    // 发布完成，更新状态
                     publishing.setValue(false);
                     if (result != null) {
-                        // 发布成功
                         publishedStrategy.setValue(result);
                     } else {
-                        // 发布失败
                         error.setValue("发布失败，请重试");
                     }
                 });
     }
 
     /**
-     * 表单验证
+     * 表单验证 ── 检查必填字段是否满足要求
      *
-     * 验证规则：英雄ID不为空、标题不为空、描述至少10个字符
+     * 验证规则：
+     * - heroId 不为 null
+     * - title 不为 null 且 trim 后不为空
+     * - description 不为 null 且 trim 后长度 >= 10
+     *
+     * 每次设置 heroId/title/description 时自动调用，
+     * 实时更新 isFormValid，控制发布按钮的 enabled 状态。
      */
     private void validateForm() {
         Long heroId = selectedHeroId.getValue();
@@ -313,9 +299,9 @@ public class PublishStrategyViewModel extends AndroidViewModel {
     }
 
     /**
-     * 重置表单数据
+     * 重置表单 ── 清空所有字段和状态
      *
-     * 清空所有表单字段和状态
+     * 用于发布成功后清空表单，或用户主动放弃编辑时重置。
      */
     public void reset() {
         selectedHeroId.setValue(null);

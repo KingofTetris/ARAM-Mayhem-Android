@@ -1,13 +1,18 @@
 package com.aram.mayhem.feature.bulletin.viewmodel;
 
 import com.aram.mayhem.common.Result;
+import com.aram.mayhem.data.local.dao.BulletinDao;
 import com.aram.mayhem.network.api.BulletinApi;
 import com.aram.mayhem.network.dto.BulletinResponse;
 import com.aram.mayhem.network.dto.PageResponse;
 import com.aram.mayhem.ui.model.BulletinUiModel;
 
+import android.app.Application;
+
 import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.arch.core.executor.TaskExecutor;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +45,12 @@ class BulletinListViewModelTest {
     private BulletinApi mockBulletinApi;
 
     @Mock
+    private Application mockApplication;
+
+    @Mock
+    private BulletinDao mockBulletinDao;
+
+    @Mock
     private Call<Result<PageResponse<BulletinResponse>>> mockBulletinsCall;
 
     @Mock
@@ -65,7 +76,10 @@ class BulletinListViewModelTest {
                 return true;
             }
         });
-        viewModel = new BulletinListViewModel(mockBulletinApi);
+        when(mockBulletinDao.getAllBulletins()).thenReturn(new MutableLiveData<>());
+        when(mockBulletinDao.getLatestBulletins(anyInt())).thenReturn(new MutableLiveData<>());
+        when(mockBulletinDao.getBulletinsByType(anyString())).thenReturn(new MutableLiveData<>());
+        viewModel = new BulletinListViewModel(mockApplication, mockBulletinApi, mockBulletinDao);
     }
 
     @AfterEach

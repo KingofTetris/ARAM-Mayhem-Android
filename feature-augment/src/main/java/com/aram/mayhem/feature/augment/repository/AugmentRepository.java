@@ -3,6 +3,7 @@ package com.aram.mayhem.feature.augment.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.aram.mayhem.common.Constants;
 import com.aram.mayhem.common.Result;
 import com.aram.mayhem.data.local.dao.AugmentDao;
 import com.aram.mayhem.data.local.entity.AugmentEntity;
@@ -28,60 +29,151 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * 符文数据仓库
+ * 符文数据仓库 ── 符文模块的统一数据访问层
  *
- * 数据源策略：优先网络 → 失败时回退本地缓存
- * 功能：符文列表分页查询、符文详情查询、套装进度查询、推荐查询、本地缓存更新
- * 关联：AugmentApi, AugmentDao, AugmentEntity, AugmentResponse
+ * ═══════════════════════════════════════════════════════════════════
+ * 一、Repository 模式是什么？
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * Repository 是 MVVM 架构中的"数据管家"，它：
+ * 1. 屏蔽了数据来源的复杂性（网络？本地？内存？）
+ * 2. 对 ViewModel 只暴露简单的 LiveData 接口
+ * 3. 决定什么时候用网络数据，什么时候用缓存数据
+ *
+ *   ViewModel 不需要知道数据从哪里来：
+ *
+ *   ViewModel  →  Repository  →  网络API（远程数据）
+ *                          ↘  Room DAO（本地缓存）
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ * 二、数据源策略
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * 本仓库采用"网络优先"策略：
+ *
+ *   ┌─────────────────────────────────────────────────────┐
+ *   │  网络请求成功？                                      │
+ *   │    ├─ 是 → 返回网络数据 + 异步写入本地缓存            │
+ *   │    └─ 否 → 回退到本地缓存                            │
+ *   │           ├─ 缓存有数据 → 返回缓存数据               │
+ *   │           └─ 缓存无数据 → 返回空列表/null            │
+ *   └─────────────────────────────────────────────────────┘
+ *
+ * 特殊情况：
+ * - getSynergyProgress() 和 getRecommendations() 没有本地缓存
+ *   因为套装进度和推荐结果是动态计算的，不适合缓存
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ * 三、数据转换流程
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ *   网络层 DTO              仓库层 Entity              UI层 Model
+ *   ┌──────────────┐      ┌──────────────┐          ┌──────────────┐
+ *   │AugmentResponse│ ──→  │AugmentEntity │          │AugmentUiModel│
+ *   │(Retrofit 反序列化)    │(Room 存储)    │ ──→     │(UI 展示)      │
+ *   └──────────────┘      └──────────────┘          └──────────────┘
+ *
+ *   转换方法：
+ *   - convertToUiModel()：列表 DTO → UI Model
+ *   - convertDetailToUiModel()：详情 DTO → UI Model
+ *   - convertToEntity()：列表 DTO → Entity（缓存写入）
+ *   - convertDetailToEntity()：详情 DTO → Entity（缓存写入）
+ *   - convertEntityToUiModel()：Entity → UI Model（缓存读取）
+ *
+ * ═══════════════════════════════════════════════════════════════════
+ * 四、与 HeroRepository 的对比
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * 两者结构几乎相同，差异点：
+ * - HeroRepository：搜索 + 梯级筛选
+ * - AugmentRepository：品质筛选 + 套装筛选 + 推荐查询
+ * - 符文多了套装进度和推荐两个无缓存接口
+ *
+ * @see AugmentApi
+ * @see AugmentDao
+ * @see AugmentEntity
+ * @see AugmentUiModel
  */
 @Singleton
 public class AugmentRepository {
 
+    /**
+     * 符文网络接口 ── Retrofit 生成的 API 实现
+     *
+     * 提供以下网络请求方法：
+     * - getAugments()：分页获取符文列表
+     * - getAugmentDetail()：获取符文详情
+     * - getSynergyProgress()：获取套装进度
+     * - getRecommendations()：获取推荐结果
+     */
     private final AugmentApi augmentApi;
+
+    /**
+     * 符文本地数据访问对象 ── Room 生成的 DAO 实现
+     *
+     * 提供以下本地数据库操作：
+     * - insertAll()：批量插入符文（缓存写入）
+     * - getAllAugmentsSync()：同步获取所有符文（缓存回退）
+     * - getAugmentByIdSync()：同步获取指定符文（缓存回退）
+     */
     private final AugmentDao augmentDao;
 
+    /**
+     * 构造函数 ── Hilt 自动注入依赖
+     *
+     * @param augmentApi  符文网络接口（Hilt 自动注入单例）
+     * @param augmentDao  符文本地数据访问对象（Hilt 自动注入单例）
+     */
     @Inject
     public AugmentRepository(AugmentApi augmentApi, AugmentDao augmentDao) {
         this.augmentApi = augmentApi;
         this.augmentDao = augmentDao;
     }
 
+    /**
+     * 获取 DAO 对象 ── 供外部模块访问本地数据库
+     *
+     * @return AugmentDao 实例
+     */
     public AugmentDao getAugmentDao() {
         return augmentDao;
     }
 
     /**
-     * 获取符文列表（符文模块）
+     * 获取符文列表 ── 分页查询，支持品质和套装筛选
      *
-     * 作用：从服务器分页获取强化符文列表，支持品质筛选、套装筛选
-     * 实现：优先请求网络 → 成功写入本地缓存 → 失败时回退本地缓存
+     * 由 AugmentViewModel.loadAugments() 调用。
      *
-     * @param page 页码（从0开始）
-     * @param size 每页数量
-     * @param quality 品质筛选（LEGENDARY/EPIC/RARE/null表示不筛选）
-     * @param synergySet 套装筛选（null表示不筛选）
+     * 执行流程：
+     * 1. 创建 MutableLiveData 作为结果容器
+     * 2. 调用 augmentApi.getAugments() 发起异步网络请求
+     * 3. 网络成功：
+     *    a. 将 AugmentResponse 列表转换为 AugmentUiModel 列表
+     *    b. 设置 result 值，通知 ViewModel
+     *    c. 异步写入本地缓存（新线程，不阻塞 UI）
+     * 4. 网络失败/业务失败：
+     *    a. 回退到本地缓存 loadFromCache()
+     *
+     * @param page       页码（从1开始）
+     * @param size       每页数量（固定20）
+     * @param quality    品质筛选（"PRISMATIC"/"GOLD"/"SILVER"/""表示全部）
+     * @param synergySet 套装筛选（""表示不筛选）
      * @return LiveData<List<AugmentUiModel>> 可观察的符文UI模型列表
      */
     public LiveData<List<AugmentUiModel>> getAugments(int page, int size, String quality, String synergySet) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<List<AugmentUiModel>> result = new MutableLiveData<>();
 
-        // 调用 Retrofit 接口发起异步网络请求：获取符文列表
         augmentApi.getAugments(quality, synergySet, page, size).enqueue(new Callback<Result<PageResponse<AugmentResponse>>>() {
             @Override
             public void onResponse(Call<Result<PageResponse<AugmentResponse>>> call, Response<Result<PageResponse<AugmentResponse>>> response) {
-                // 判断：HTTP请求成功 + 响应体不为空 + 业务状态码成功
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     PageResponse<AugmentResponse> pageData = response.body().getData();
-                    // 判断分页数据有效：数据不为空且记录列表不为空
                     if (pageData != null && pageData.getRecords() != null) {
-                        // 网络数据 → UI模型转换
                         List<AugmentUiModel> uiModels = pageData.getRecords().stream()
                                 .map(AugmentRepository.this::convertToUiModel)
                                 .collect(Collectors.toList());
                         result.setValue(uiModels);
 
-                        // 异步写入本地缓存
                         new Thread(() -> {
                             List<AugmentEntity> entities = pageData.getRecords().stream()
                                     .map(AugmentRepository.this::convertToEntity)
@@ -89,18 +181,15 @@ public class AugmentRepository {
                             augmentDao.insertAll(entities);
                         }).start();
                     } else {
-                        // 数据为空：设置空列表
                         result.setValue(Collections.emptyList());
                     }
                 } else {
-                    // 业务失败：回退到本地缓存
                     loadFromCache(result);
                 }
             }
 
             @Override
             public void onFailure(Call<Result<PageResponse<AugmentResponse>>> call, Throwable t) {
-                // 网络异常：回退到本地缓存
                 loadFromCache(result);
             }
         });
@@ -109,32 +198,29 @@ public class AugmentRepository {
     }
 
     /**
-     * 获取符文详情（符文模块）
+     * 获取符文详情 ── 根据 ID 获取完整符文信息
      *
-     * 作用：根据符文ID获取完整符文信息
-     * 实现：优先请求网络 → 成功写入本地缓存 → 失败时回退本地缓存
+     * 由 AugmentDetailViewModel.loadAugmentDetail() 调用。
      *
-     * @param augmentId 符文ID
+     * 与 getAugments() 的区别：
+     * - 列表接口返回简略信息（无描述、无第二/三套装）
+     * - 详情接口返回完整信息（有描述、有全部套装、有陷阱标记）
+     *
+     * @param augmentId 符文唯一标识符
      * @return LiveData<AugmentUiModel> 可观察的符文详情UI模型
      */
     public LiveData<AugmentUiModel> getAugmentDetail(long augmentId) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<AugmentUiModel> result = new MutableLiveData<>();
 
-        // 调用 Retrofit 接口发起异步网络请求：获取符文详情
         augmentApi.getAugmentDetail(augmentId).enqueue(new Callback<Result<AugmentDetailResponse>>() {
             @Override
             public void onResponse(Call<Result<AugmentDetailResponse>> call, Response<Result<AugmentDetailResponse>> response) {
-                // 判断：HTTP请求成功 + 响应体不为空 + 业务状态码成功
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     AugmentDetailResponse detail = response.body().getData();
-                    // 判断详情数据有效
                     if (detail != null) {
-                        // 网络数据 → UI模型转换并设置到 LiveData
                         AugmentUiModel uiModel = convertDetailToUiModel(detail);
                         result.setValue(uiModel);
 
-                        // 异步写入本地缓存
                         new Thread(() -> {
                             AugmentEntity entity = convertDetailToEntity(detail);
                             List<AugmentEntity> list = new ArrayList<>();
@@ -143,14 +229,12 @@ public class AugmentRepository {
                         }).start();
                     }
                 } else {
-                    // 业务失败：回退到本地缓存
                     loadDetailFromCache(augmentId, result);
                 }
             }
 
             @Override
             public void onFailure(Call<Result<AugmentDetailResponse>> call, Throwable t) {
-                // 网络异常：回退到本地缓存
                 loadDetailFromCache(augmentId, result);
             }
         });
@@ -159,24 +243,24 @@ public class AugmentRepository {
     }
 
     /**
-     * 获取套装进度（符文模块）
+     * 获取套装进度 ── 查询已选符文触发的套装收集进度
      *
-     * 作用：根据已选符文ID列表获取各套装的收集进度
-     * 实现：直接请求网络，无缓存回退
+     * 由 SynergyProgressViewModel 和 AugmentRecommendViewModel 调用。
      *
-     * @param augmentIds 已选符文ID列表
+     * 注意：此接口没有本地缓存！
+     * 原因：套装进度是动态计算的，依赖当前已选符文组合，
+     * 缓存意义不大（每次选择变化都需要重新计算）。
+     *
+     * @param augmentIds 已选符文 ID 列表
      * @return LiveData<List<SynergyProgressResponse>> 可观察的套装进度列表
      */
     public LiveData<List<SynergyProgressResponse>> getSynergyProgress(List<Long> augmentIds) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<List<SynergyProgressResponse>> result = new MutableLiveData<>();
 
-        // 转换列表为逗号分隔的字符串参数
         String idsParam = augmentIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
 
-        // 调用 Retrofit 接口发起异步网络请求：获取套装进度
         augmentApi.getSynergyProgress(idsParam).enqueue(new Callback<Result<List<SynergyProgressResponse>>>() {
             @Override
             public void onResponse(Call<Result<List<SynergyProgressResponse>>> call, Response<Result<List<SynergyProgressResponse>>> response) {
@@ -198,40 +282,39 @@ public class AugmentRepository {
     }
 
     /**
-     * 获取符文推荐（符文模块）
+     * 获取符文推荐 ── 基于英雄和已选符文的智能推荐
      *
-     * 作用：根据当前已选符文和英雄，获取智能推荐的符文搭配方案
-     * 实现：直接请求网络，无缓存回退
+     * 由 AugmentRecommendViewModel.refreshData() 调用。
      *
-     * @param heroId 英雄ID
-     * @param selectedAugmentIds 当前已选的符文ID列表
-     * @return LiveData<List<AugmentRecommendResponse>> 可观察的推荐方案列表
+     * 推荐算法考虑因素：
+     * 1. 英雄类型（法师/战士/刺客等）→ 推荐匹配的符文
+     * 2. 已选符文的套装进度 → 推荐能完成套装的符文
+     * 3. 符文胜率 → 推荐高胜率符文
+     *
+     * 注意：此接口也没有本地缓存，原因同 getSynergyProgress()。
+     *
+     * @param heroId              英雄 ID
+     * @param selectedAugmentIds  当前已选的符文 ID 列表
+     * @return LiveData<List<AugmentRecommendResponse>> 可观察的推荐结果列表
      */
     public LiveData<List<AugmentRecommendResponse>> getRecommendations(long heroId, List<Long> selectedAugmentIds) {
-        // 创建可修改的 MutableLiveData，用于对外提供可观察的数据结果
         MutableLiveData<List<AugmentRecommendResponse>> result = new MutableLiveData<>();
 
-        // 构建推荐请求体，封装英雄ID和已选符文列表
         AugmentRecommendRequest request = new AugmentRecommendRequest(heroId, selectedAugmentIds);
 
-        // 调用 Retrofit 接口发起异步网络请求：获取符文推荐
         augmentApi.getRecommendations(request).enqueue(new Callback<Result<List<AugmentRecommendResponse>>>() {
             @Override
             public void onResponse(Call<Result<List<AugmentRecommendResponse>>> call, Response<Result<List<AugmentRecommendResponse>>> response) {
-                // 判断：HTTP请求成功 + 响应体不为空 + 业务状态码成功
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     List<AugmentRecommendResponse> data = response.body().getData();
-                    // 数据保护：确保列表不为null
                     result.setValue(data != null ? data : Collections.emptyList());
                 } else {
-                    // 业务失败：设置空列表
                     result.setValue(Collections.emptyList());
                 }
             }
 
             @Override
             public void onFailure(Call<Result<List<AugmentRecommendResponse>>> call, Throwable t) {
-                // 网络异常：设置空列表
                 result.setValue(Collections.emptyList());
             }
         });
@@ -240,66 +323,78 @@ public class AugmentRepository {
     }
 
     /**
-     * 从本地缓存加载符文列表（私有方法）
+     * 从本地缓存加载符文列表 ── 网络失败时的回退方案
      *
-     * 作用：当网络请求失败时，回退从 Room 数据库加载本地缓存的符文列表
-     * 实现：子线程查询 Room → UI模型转换 → postValue 到 LiveData
+     * 使用场景：
+     * - 网络不可达（onFailure）
+     * - 服务器返回业务错误（isSuccess=false）
+     *
+     * 执行流程：
+     * 1. 在子线程查询 Room 数据库
+     * 2. 将 AugmentEntity 转换为 AugmentUiModel
+     * 3. 使用 postValue() 切换到主线程设置数据
+     *
+     * 注意：必须使用 postValue() 而不是 setValue()，
+     * 因为 Room 查询在子线程执行，setValue() 只能在主线程调用。
      *
      * @param result 可观察的 MutableLiveData，用于接收缓存数据
      */
     private void loadFromCache(MutableLiveData<List<AugmentUiModel>> result) {
-        // 子线程查询本地缓存
         new Thread(() -> {
             List<AugmentEntity> cached = augmentDao.getAllAugmentsSync();
-            // 判断缓存有效：数据不为空
             if (cached != null && !cached.isEmpty()) {
-                // 缓存数据 → UI模型转换
                 List<AugmentUiModel> uiModels = cached.stream()
                         .map(this::convertEntityToUiModel)
                         .collect(Collectors.toList());
-                // postValue：子线程切换到主线程设置数据
                 result.postValue(uiModels);
             } else {
-                // 缓存为空：设置空列表
                 result.postValue(Collections.emptyList());
             }
         }).start();
     }
 
     /**
-     * 从本地缓存加载符文详情（私有方法）
+     * 从本地缓存加载符文详情 ── 网络失败时的回退方案
      *
-     * 作用：当网络请求失败时，回退从 Room 数据库加载指定符文的详情
-     * 实现：子线程查询 Room → UI模型转换 → postValue 到 LiveData
+     * 与 loadFromCache() 的区别：
+     * - loadFromCache()：加载所有符文（列表场景）
+     * - loadDetailFromCache()：加载指定 ID 的符文（详情场景）
      *
-     * @param augmentId 符文ID
-     * @param result 可观察的 MutableLiveData，用于接收缓存数据
+     * @param augmentId 符文 ID
+     * @param result    可观察的 MutableLiveData，用于接收缓存数据
      */
     private void loadDetailFromCache(long augmentId, MutableLiveData<AugmentUiModel> result) {
-        // 子线程查询本地缓存
         new Thread(() -> {
             AugmentEntity cached = augmentDao.getAugmentByIdSync(augmentId);
-            // 判断缓存有效：数据不为空
             if (cached != null) {
-                // 缓存数据 → UI模型转换
                 result.postValue(convertEntityToUiModel(cached));
             } else {
-                // 缓存为空：设置null
                 result.postValue(null);
             }
         }).start();
     }
 
     /**
-     * 网络响应 → UI模型转换（私有方法）
+     * 列表 DTO → UI 模型转换
      *
-     * 作用：将服务器返回的 AugmentResponse DTO 转换为 UI层使用的 AugmentUiModel
-     * 转换规则：字段一一对应，null 值转为默认值
+     * AugmentResponse 是列表接口返回的简略数据，缺少以下字段：
+     * - description（符文描述）
+     * - synergySet2 / synergySet3（第二/三套装）
+     * - isTrap（是否陷阱符文）
+     *
+     * 这些字段在列表页不需要展示，所以设为 null/false。
+     *
+     * iconUrl 处理：如果服务器返回相对路径（以 / 开头），
+     * 需要拼接 BASE_URL 转为完整 URL。
      *
      * @param response 服务器返回的符文列表项数据
      * @return AugmentUiModel UI层使用的符文展示模型
      */
     private AugmentUiModel convertToUiModel(AugmentResponse response) {
+        String iconUrl = response.getIconUrl();
+        if (iconUrl != null && iconUrl.startsWith("/")) {
+            iconUrl = Constants.BASE_URL + iconUrl.substring(1);
+        }
         return new AugmentUiModel(
                 response.getId() != null ? response.getId() : 0,
                 response.getNameZh(),
@@ -309,7 +404,7 @@ public class AugmentRepository {
                 response.getSynergySet(),
                 null,
                 null,
-                response.getIconUrl(),
+                iconUrl,
                 response.getWinRate() != null ? response.getWinRate() : 0.0,
                 response.getPickRate() != null ? response.getPickRate() : 0.0,
                 response.getAvgPlacement() != null ? response.getAvgPlacement() : 0.0,
@@ -319,15 +414,19 @@ public class AugmentRepository {
     }
 
     /**
-     * 详情响应 → UI模型转换（私有方法）
+     * 详情 DTO → UI 模型转换
      *
-     * 作用：将服务器返回的 AugmentDetailResponse DTO 转换为 UI层使用的 AugmentUiModel
-     * 转换规则：字段一一对应，null 值转为默认值
+     * AugmentDetailResponse 是详情接口返回的完整数据，包含所有字段。
+     * 与 convertToUiModel() 的区别：description、synergySet2/3、isTrap 有值。
      *
      * @param detail 服务器返回的符文详情数据
      * @return AugmentUiModel UI层使用的符文展示模型
      */
     private AugmentUiModel convertDetailToUiModel(AugmentDetailResponse detail) {
+        String iconUrl = detail.getIconUrl();
+        if (iconUrl != null && iconUrl.startsWith("/")) {
+            iconUrl = Constants.BASE_URL + iconUrl.substring(1);
+        }
         return new AugmentUiModel(
                 detail.getId() != null ? detail.getId() : 0,
                 detail.getNameZh(),
@@ -337,7 +436,7 @@ public class AugmentRepository {
                 detail.getSynergySet(),
                 detail.getSynergySet2(),
                 detail.getSynergySet3(),
-                detail.getIconUrl(),
+                iconUrl,
                 detail.getWinRate() != null ? detail.getWinRate() : 0.0,
                 detail.getPickRate() != null ? detail.getPickRate() : 0.0,
                 detail.getAvgPlacement() != null ? detail.getAvgPlacement() : 0.0,
@@ -347,10 +446,13 @@ public class AugmentRepository {
     }
 
     /**
-     * 网络响应 → 数据实体转换（私有方法）
+     * 列表 DTO → 数据库实体转换（缓存写入用）
      *
-     * 作用：将服务器返回的 AugmentResponse DTO 转换为 Room 存储的 AugmentEntity
-     * 转换规则：字段一一对应，null 值转为默认值，isTrap 固定为 false
+     * 将网络数据转换为 Room 数据库实体，用于异步写入本地缓存。
+     * 列表 DTO 缺少 description、synergySet2/3、isTrap，
+     * 这些字段在 Entity 中保持默认值（null/false）。
+     *
+     * updatedAt 记录缓存写入时间，可用于后续缓存过期判断。
      *
      * @param response 服务器返回的符文列表项数据
      * @return AugmentEntity Room 数据库存储的符文数据实体
@@ -373,10 +475,10 @@ public class AugmentRepository {
     }
 
     /**
-     * 详情响应 → 数据实体转换（私有方法）
+     * 详情 DTO → 数据库实体转换（缓存写入用）
      *
-     * 作用：将服务器返回的 AugmentDetailResponse DTO 转换为 Room 存储的 AugmentEntity
-     * 转换规则：字段一一对应，null 值转为默认值
+     * 与 convertToEntity() 的区别：包含完整字段。
+     * 详情数据写入缓存后，后续离线访问也能展示完整信息。
      *
      * @param detail 服务器返回的符文详情数据
      * @return AugmentEntity Room 数据库存储的符文数据实体
@@ -402,10 +504,11 @@ public class AugmentRepository {
     }
 
     /**
-     * 缓存实体 → UI模型转换（私有方法）
+     * 数据库实体 → UI 模型转换（缓存读取用）
      *
-     * 作用：将 Room 数据库的 AugmentEntity 转换为 UI层使用的 AugmentUiModel
-     * 转换规则：字段一一对应
+     * 从 Room 数据库读取缓存数据后，转换为 UI 层使用的模型。
+     * Entity 的字段结构与 AugmentUiModel 几乎一一对应，
+     * 直接映射即可，无需特殊处理。
      *
      * @param entity Room 数据库存储的符文数据实体
      * @return AugmentUiModel UI层使用的符文展示模型

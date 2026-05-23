@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdk rootProject.ext.minSdkVersion
 
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -26,7 +28,7 @@ android {
 dependencies {
     implementation project(':core-common')
 
-    implementation "androidx.room:room-runtime:$roomVersion"
+    api "androidx.room:room-runtime:$roomVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
 
@@ -36,4 +38,9 @@ dependencies {
     annotationProcessor "com.google.dagger:hilt-compiler:$hiltVersion"
 
     implementation "com.google.code.gson:gson:$gsonVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test:runner:1.6.1"
 }
