@@ -71,11 +71,25 @@ public class BulletinEntity {
     public String type;
 
     /**
-     * 是否置顶 ── 1=置顶，0=普通
+     * 是否置顶 ── 1=置顶，0=普通，null=未设置
      *
-     * SQLite 中 boolean 存储为 INTEGER
+     * SQLite 中 Integer 存储
      */
-    public boolean isPinned;
+    public Integer isPinned;
+
+    /**
+     * 公告图片 URL ── 可选的配图
+     *
+     * 部分公告包含配图，用于详情页展示
+     */
+    public String imageUrl;
+
+    /**
+     * 创建时间 ── ISO 8601 格式的时间字符串
+     *
+     * 如 "2026-05-20T14:30:00"
+     */
+    public String createdAt;
 
     /**
      * 发布时间 ── ISO 8601 格式的时间字符串

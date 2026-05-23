@@ -5,7 +5,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.aram.mayhem.data.local.converter.StringListConverter;
+import com.aram.mayhem.data.local.converter.LongListConverter;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ import java.util.List;
         @Index(value = "quality"),
         @Index(value = "synergySet")
 })
-@TypeConverters(StringListConverter.class)
+@TypeConverters(LongListConverter.class)
 public class AugmentEntity {
 
     /**
@@ -87,6 +87,20 @@ public class AugmentEntity {
     public String synergySet;
 
     /**
+     * 第二套装名称 ── 符文可以属于多个套装
+     *
+     * null 表示该符文不属于第二套装
+     */
+    public String synergySet2;
+
+    /**
+     * 第三套装名称 ── 符文最多可属于三个套装
+     *
+     * null 表示该符文不属于第三套装
+     */
+    public String synergySet3;
+
+    /**
      * 符文效果描述 ── 简短的效果说明
      *
      * 如"对敌方英雄造成伤害时，触发额外魔法伤害"
@@ -121,4 +135,29 @@ public class AugmentEntity {
      * 用于缓存过期判断
      */
     public long updatedAt;
+
+    /**
+     * 胜率 ── 如 0.523 表示 52.3%
+     */
+    public Double winRate;
+
+    /**
+     * 选取率 ── 如 0.153 表示 15.3%
+     */
+    public Double pickRate;
+
+    /**
+     * 平均名次 ── 范围 1.0~5.0，越低越好
+     */
+    public Double avgPlacement;
+
+    /**
+     * 梯级评级 ── S_PLUS/S/A/B/C
+     */
+    public String tier;
+
+    /**
+     * 是否为陷阱符文 ── true 表示看似强但实际胜率低
+     */
+    public boolean isTrap;
 }

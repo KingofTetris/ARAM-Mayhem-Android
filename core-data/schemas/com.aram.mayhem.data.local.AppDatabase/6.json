@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "2b15714b3c255533811d61ed095dabc1",
+    "identityHash": "b107efa7466242877ac4798c2825ff2f",
     "entities": [
       {
         "tableName": "heroes",
@@ -186,7 +186,7 @@
       },
       {
         "tableName": "augments",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `description` TEXT, `descriptionDetail` TEXT, `quality` TEXT, `synergySet` TEXT, `synergySet2` TEXT, `synergySet3` TEXT, `iconUrl` TEXT, `winRate` REAL NOT NULL, `pickRate` REAL NOT NULL, `avgPlacement` REAL NOT NULL, `tier` TEXT, `isTrap` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameZh` TEXT, `nameEn` TEXT, `quality` TEXT, `synergySet` TEXT, `synergySet2` TEXT, `synergySet3` TEXT, `description` TEXT, `descriptionDetail` TEXT, `iconUrl` TEXT, `heroIds` TEXT, `updatedAt` INTEGER NOT NULL, `winRate` REAL, `pickRate` REAL, `avgPlacement` REAL, `tier` TEXT, `isTrap` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -203,18 +203,6 @@
           {
             "fieldPath": "nameEn",
             "columnName": "nameEn",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "descriptionDetail",
-            "columnName": "descriptionDetail",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -243,28 +231,52 @@
             "notNull": false
           },
           {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "descriptionDetail",
+            "columnName": "descriptionDetail",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "iconUrl",
             "columnName": "iconUrl",
             "affinity": "TEXT",
             "notNull": false
           },
           {
+            "fieldPath": "heroIds",
+            "columnName": "heroIds",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "winRate",
             "columnName": "winRate",
             "affinity": "REAL",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "pickRate",
             "columnName": "pickRate",
             "affinity": "REAL",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "avgPlacement",
             "columnName": "avgPlacement",
             "affinity": "REAL",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "tier",
@@ -275,12 +287,6 @@
           {
             "fieldPath": "isTrap",
             "columnName": "isTrap",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "updatedAt",
-            "columnName": "updatedAt",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -444,19 +450,13 @@
       },
       {
         "tableName": "bulletins",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` TEXT, `title` TEXT, `content` TEXT, `imageUrl` TEXT, `isPinned` INTEGER NOT NULL, `publishedAt` TEXT, `createdAt` TEXT, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `content` TEXT, `type` TEXT, `isPinned` INTEGER, `imageUrl` TEXT, `createdAt` TEXT, `publishedAt` TEXT, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "title",
@@ -471,8 +471,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "imageUrl",
-            "columnName": "imageUrl",
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -480,17 +480,23 @@
             "fieldPath": "isPinned",
             "columnName": "isPinned",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
-            "fieldPath": "publishedAt",
-            "columnName": "publishedAt",
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "createdAt",
             "columnName": "createdAt",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "publishedAt",
+            "columnName": "publishedAt",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -518,13 +524,13 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_bulletins_type` ON `${TABLE_NAME}` (`type`)"
           },
           {
-            "name": "index_bulletins_isPinned",
+            "name": "index_bulletins_publishedAt",
             "unique": false,
             "columnNames": [
-              "isPinned"
+              "publishedAt"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bulletins_isPinned` ON `${TABLE_NAME}` (`isPinned`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bulletins_publishedAt` ON `${TABLE_NAME}` (`publishedAt`)"
           }
         ],
         "foreignKeys": []
@@ -533,7 +539,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2b15714b3c255533811d61ed095dabc1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b107efa7466242877ac4798c2825ff2f')"
     ]
   }
 }

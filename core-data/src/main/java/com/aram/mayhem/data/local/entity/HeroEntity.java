@@ -5,7 +5,10 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.aram.mayhem.data.local.converter.AugmentBriefListConverter;
+import com.aram.mayhem.data.local.converter.LongListConverter;
 import com.aram.mayhem.data.local.converter.SkillListConverter;
+import com.aram.mayhem.data.local.converter.StringListConverter;
 
 import java.util.List;
 
@@ -45,7 +48,7 @@ import java.util.List;
  *   - role 索引：加速按定位筛选（WHERE role = '法师'）
  *   - nameZh 索引：加速中文名搜索（WHERE nameZh LIKE '%亚索%'）
  *
- * @TypeConverters(SkillListConverter.class)：
+ * @TypeConverters({SkillListConverter.class, StringListConverter.class, LongListConverter.class, AugmentBriefListConverter.class})：
  *   - 告诉 Room 如何处理无法直接映射到 SQLite 类型的字段
  *   - List<SkillData> 无法直接存入 SQLite，需要转换为 JSON 字符串
  *   - SkillListConverter 负责在 List ↔ JSON 之间转换

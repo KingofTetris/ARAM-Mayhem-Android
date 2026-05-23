@@ -226,7 +226,7 @@ public class AugmentListFragment extends Fragment {
 
             @Override
             public boolean isLastPage() {
-                return viewModel.getIsLastPage().getValue() != null && viewModel.getIsLastPage.getValue();
+                return viewModel.getIsLastPage().getValue() != null && viewModel.getIsLastPage().getValue();
             }
 
             @Override
