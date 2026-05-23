@@ -1,7 +1,8 @@
 # ARAM Mayhem Assistant 开发操作步骤记录
 
 > 本文档记录项目从初始化到当前阶段的所有关键操作步骤、决策过程、问题及解决方案。
-> 最后更新：2026-05-20
+> 最后更新：2026-05-23
+> 当前进度：M1~M11 全部完成 ✅
 
 ---
 
@@ -439,3 +440,65 @@
 | ViewBinding 缓存导致修改后仍报旧错误 | 执行 `gradlew clean` 清除生成文件后重新构建 |
 
 **编译验证**：`gradlew clean assembleRelease` → **BUILD SUCCESSFUL**，生成 `app-release.apk`（已签名）
+
+---
+
+## M5~M11 Android 全模块详细注释完成记录
+
+**开始时间**：2026-05-22 ~ 2026-05-23
+
+**实施内容**：
+
+1. **core-network 模块注释**
+   - ApiClient、AuthInterceptor、TokenAuthenticator 全文件标准化注释
+   - DTO 类详细注释（HeroListResponse、StrategyListResponse、SynergyProgressResponse 等）
+
+2. **core-data 模块注释**
+   - AppDatabase、HeroDao、StrategyDao 全文件标准化注释
+   - 新增 BulletinDao、StrategyEntity、BulletinEntity 详细注释
+   - Room Migration v4→v5→v6 策略说明
+
+3. **core-ui 模块注释**
+   - VoteButton、StatefulLayout、TierBadgeView、QualityChip、BalanceBar 等自定义组件
+   - PaginationScrollListener、SearchToolbar、BulletinCarouselView 详细注释
+
+4. **feature-hero 模块注释**
+   - HeroListFragment、HeroDetailFragment、HeroRepository 完整注释
+   - HeroCardAdapter、SkillAdapter 详细注释
+   - HeroListViewModel、HeroDetailViewModel 数据流说明
+
+5. **feature-augment 模块注释**
+   - AugmentListFragment、AugmentRecommendFragment 完整注释
+   - AugmentRepository、SynergyProgressAdapter 详细注释
+   - AugmentDetailBottomSheet 交互流程说明
+
+6. **feature-community 模块注释**
+   - CommunityFeedFragment、PublishStrategyFragment、StrategyDetailFragment 完整注释
+   - StrategyCardAdapter、AugmentListAdapter、ItemListAdapter 详细注释
+   - StrategyRepository 缓存策略说明
+
+7. **feature-bulletin 模块注释**
+   - BulletinListFragment、BulletinDetailFragment、BulletinAdapter 完整注释
+   - BulletinListViewModel 数据加载与缓存逻辑说明
+
+8. **feature-profile 模块注释**
+   - ProfileFragment、SettingsFragment、MyStrategiesFragment 完整注释
+   - ProfileViewModel、MyStrategiesViewModel 认证流程说明
+   - MyStrategiesAdapter 双重删除机制（按钮+滑动）详解
+
+9. **单元测试框架**
+   - HeroRepositoryTest：英雄列表缓存测试
+   - AugmentRepositoryTest：符文列表缓存测试
+   - StrategyRepositoryTest：攻略列表缓存测试
+   - ProfileRepositoryTest：用户资料缓存测试
+
+**注释标准**：
+- 7 大章节模板：组件用途、布局结构、数据流、关键机制、实现原理、导航关系、设计考量
+- 每个方法详细说明输入/输出/副作用
+- 包含时序图、数据流图、布局结构图等可视化说明
+- 关键设计决策的原因分析
+
+**新增文档**：
+- offline-testing-guide.md：离线模式测试步骤文档（2026-05-22）
+
+**M1~M11 全部完成** ✅ 2026-05-23
